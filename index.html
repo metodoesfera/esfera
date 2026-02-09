@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ESFERA™ — TradeMind Profiler 2.0</title>
+  <meta name="description" content="Ferramenta digital do Método ESFERA™ — avaliação dimensional da mente do trader." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" integrity="sha256-0OGnR7nqX5zUoC5VAbuM6dp3z8Cfb6l2eE3n0O4Cj3s=" crossorigin="anonymous"></script>
+  <style>
+    :root{
+      --bg:#0b0d12;
+      --card:#111522;
+      --card2:#0f1320;
+      --text:#e9ecf1;
+      --muted:#aab3c2;
+      --line:#22304a;
+      --accent:#7c5cff;
+      --accent2:#19c37d;
+      --warn:#ffb020;
+      --danger:#ff4d4f;
+      --radius:18px;
+      --shadow:0 20px 60px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(1200px 600px at 15% 10%, rgba(124,92,255,.18), transparent 60%),radial-gradient(900px 500px at 85% 20%, rgba(25,195,125,.12), transparent 60%),var(--bg);color:var(--text)}
+    a{color:inherit}
+    .wrap{max-width:1080px;margin:0 auto;padding:32px 18px 80px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#3dd6ff);display:grid;place-items:center;font-weight:800;box-shadow:0 12px 40px rgba(124,92,255,.25)}
+    .brand h1{font-size:16px;margin:0}
+    .pill{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:7px 10px;border-radius:999px;background:rgba(17,21,34,.55)}
+
+    .grid{display:grid;grid-template-columns: 1.1fr .9fr;gap:18px}
+    @media (max-width: 980px){.grid{grid-template-columns:1fr}}
+
+    .card{background:linear-gradient(180deg, rgba(17,21,34,.85), rgba(17,21,34,.65));border:1px solid rgba(34,48,74,.9);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .card .inner{padding:18px}
+    .hero{padding:22px 22px 18px}
+    .hero h2{margin:0 0 8px;font-size:28px;letter-spacing:-.02em}
+    .hero p{margin:0 0 14px;color:var(--muted);line-height:1.55}
+    .hero .bullets{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+    @media (max-width: 520px){.hero .bullets{grid-template-columns:1fr}}
+    .b{padding:12px;border:1px solid rgba(34,48,74,.9);border-radius:16px;background:rgba(15,19,32,.65)}
+    .b .t{font-weight:700;font-size:13px;margin-bottom:4px}
+    .b .d{font-size:12px;color:var(--muted);line-height:1.4}
+
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+    .btn{appearance:none;border:none;border-radius:14px;padding:12px 14px;font-weight:700;cursor:pointer;transition:.18s transform,.18s opacity,.18s filter;display:inline-flex;align-items:center;gap:10px}
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{background:linear-gradient(135deg,var(--accent),#3dd6ff);color:#0b0d12}
+    .btn.ghost{background:rgba(15,19,32,.6);border:1px solid rgba(34,48,74,.9);color:var(--text)}
+    .btn.danger{background:rgba(255,77,79,.12);border:1px solid rgba(255,77,79,.35);color:var(--text)}
+    .btn:disabled{opacity:.55;cursor:not-allowed;filter:grayscale(.2)}
+
+    .formRow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+    @media (max-width: 520px){.formRow{grid-template-columns:1fr}}
+    label{font-size:12px;color:var(--muted);display:block;margin:0 0 6px}
+    input,select{width:100%;padding:12px 12px;border-radius:14px;background:rgba(15,19,32,.7);border:1px solid rgba(34,48,74,.9);color:var(--text);outline:none}
+    input:focus,select:focus{border-color:rgba(124,92,255,.7);box-shadow:0 0 0 4px rgba(124,92,255,.12)}
+
+    .sectionTitle{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px}
+    .sectionTitle h3{margin:0;font-size:14px}
+    .hint{font-size:12px;color:var(--muted)}
+
+    .qWrap{display:flex;flex-direction:column;gap:10px}
+    .q{padding:14px;border-radius:16px;background:rgba(15,19,32,.6);border:1px solid rgba(34,48,74,.85)}
+    .qTop{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+    .qIdx{font-size:12px;color:var(--muted);min-width:44px}
+    .qText{font-size:13px;line-height:1.45}
+    .scale{display:grid;grid-template-columns: repeat(5, 1fr);gap:8px;margin-top:10px}
+    .opt{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 10px;border-radius:14px;border:1px solid rgba(34,48,74,.85);background:rgba(17,21,34,.55);cursor:pointer;user-select:none;font-size:12px}
+    .opt input{display:none}
+    .opt.sel{border-color:rgba(124,92,255,.8);box-shadow:0 0 0 4px rgba(124,92,255,.12)}
+
+    .progress{height:10px;border-radius:999px;background:rgba(34,48,74,.5);overflow:hidden}
+    .progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#3dd6ff)}
+
+    .resultGrid{display:grid;grid-template-columns:1fr;gap:12px}
+    .badge{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(34,48,74,.9);background:rgba(15,19,32,.65);padding:8px 10px;border-radius:999px;font-size:12px;color:var(--muted)}
+    .kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width:520px){.kpi{grid-template-columns:1fr}}
+    .k{padding:14px;border-radius:16px;border:1px solid rgba(34,48,74,.85);background:rgba(15,19,32,.6)}
+    .k .v{font-size:24px;font-weight:800}
+    .k .l{font-size:12px;color:var(--muted)}
+
+    .muted{color:var(--muted)}
+    .small{font-size:12px}
+    .divider{height:1px;background:rgba(34,48,74,.8);margin:14px 0}
+
+    .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;background:rgba(17,21,34,.95);border:1px solid rgba(34,48,74,.9);color:var(--text);padding:10px 12px;border-radius:14px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.18s opacity}
+    .toast.show{opacity:1}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">E</div>
+        <div>
+          <h1>ESFERA™ — TradeMind Profiler 2.0</h1>
+          <div class="pill">Ferramenta digital • Landing + Teste + Resultado</div>
+        </div>
+      </div>
+      <button id="btnReset" class="btn ghost" type="button" title="Limpar respostas">Reiniciar</button>
+    </div>
+
+    <div id="viewLanding" class="grid">
+      <div class="card">
+        <div class="hero">
+          <h2>Diagnóstico dimensional da mente do trader</h2>
+          <p>
+            O ESFERA™ não define quem você é. Ele mostra como sua mente está operando sob risco <b>agora</b>.
+            Quanto mais equilibrado o gráfico, maior sua consistência emocional, cognitiva e estratégica.
+          </p>
+
+          <div class="formRow">
+            <div>
+              <label for="name">Nome</label>
+              <input id="name" placeholder="Ex.: Jhow" autocomplete="name" />
+            </div>
+            <div>
+              <label for="email">Email (opcional)</label>
+              <input id="email" placeholder="voce@exemplo.com" autocomplete="email" />
+            </div>
+            <div>
+              <label for="market">Mercado principal</label>
+              <select id="market">
+                <option value="Day Trade">Day Trade</option>
+                <option value="Swing Trade">Swing Trade</option>
+                <option value="Cripto">Cripto</option>
+                <option value="Opções">Opções</option>
+                <option value="Forex">Forex</option>
+                <option value="Outro">Outro</option>
+              </select>
+            </div>
+            <div>
+              <label for="experience">Experiência</label>
+              <select id="experience">
+                <option value="Iniciante">Iniciante</option>
+                <option value="Intermediário">Intermediário</option>
+                <option value="Avançado">Avançado</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="btnStart" class="btn primary" type="button">Começar o teste</button>
+            <button id="btnLoad" class="btn ghost" type="button">Continuar (se houver)</button>
+          </div>
+
+          <div class="hero bullets">
+            <div class="b"><div class="t">4 Dimensões</div><div class="d">Controle, Risco, Autonomia e Aprendizado.</div></div>
+            <div class="b"><div class="t">64 Perguntas</div><div class="d">Escala 1–5, leitura clara e aplicável.</div></div>
+            <div class="b"><div class="t">Radar ESFERA™</div><div class="d">Visual do equilíbrio mental do trader.</div></div>
+            <div class="b"><div class="t">Devolutiva oficial</div><div class="d">Leitura do gráfico + direção de evolução.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="inner">
+          <div class="sectionTitle"><h3>Como responder</h3></div>
+          <p class="small muted">
+            Responda de forma espontânea. Use a escala:
+            <b>1</b> Nunca, <b>2</b> Raramente, <b>3</b> Às vezes, <b>4</b> Frequentemente, <b>5</b> Sempre.
+          </p>
+          <div class="divider"></div>
+          <div class="sectionTitle"><h3>O que você vai receber</h3></div>
+          <ul class="small muted" style="margin:0 0 10px 16px; line-height:1.6">
+            <li>Pontuação por dimensão (0–80)</li>
+            <li>Gráfico radar ESFERA™</li>
+            <li>Nível interpretativo por dimensão</li>
+            <li>Devolutiva oficial do método</li>
+          </ul>
+          <div class="divider"></div>
+          <div class="badge">⚠️ ESFERA™ não é terapia e não promete resultados financeiros.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="viewTest" style="display:none" class="grid">
+      <div class="card">
+        <div class="inner">
+          <div class="sectionTitle">
+            <h3>Questionário (64 itens)</h3>
+            <div class="hint"><span id="progressText">0/64</span></div>
+          </div>
+          <div class="progress" aria-label="Progresso"><div id="progressBar"></div></div>
+          <div class="divider"></div>
+          <div id="questions" class="qWrap"></div>
+          <div class="divider"></div>
+          <div class="actions">
+            <button id="btnSubmit" class="btn primary" type="button" disabled>Ver resultado</button>
+            <button id="btnSave" class="btn ghost" type="button">Salvar e sair</button>
+            <button id="btnBack" class="btn ghost" type="button">Voltar</button>
+          </div>
+          <p class="small muted" style="margin-top:12px">Dica: você pode salvar e continuar depois (fica no seu navegador).</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="inner">
+          <div class="sectionTitle"><h3>Legenda da escala</h3></div>
+          <div class="small muted" style="line-height:1.7">
+            1 = Nunca / Discordo totalmente<br>
+            2 = Raramente<br>
+            3 = Às vezes<br>
+            4 = Frequentemente<br>
+            5 = Sempre / Concordo totalmente
+          </div>
+          <div class="divider"></div>
+          <div class="sectionTitle"><h3>Dimensões</h3></div>
+          <div class="small muted" style="line-height:1.7">
+            <b>Controle Inibitório</b>: freio antes do clique.<br>
+            <b>Gestão do Risco</b>: relação emocional com perda e exposição.<br>
+            <b>Autonomia Decisional</b>: autoria e responsabilidade.<br>
+            <b>Aprendizado Adaptativo</b>: evolução contínua por feedback.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="viewResult" style="display:none" class="grid">
+      <div class="card">
+        <div class="inner">
+          <div class="sectionTitle"><h3>Resultado ESFERA™</h3><div class="hint" id="who"></div></div>
+          <div class="badge" id="meta"></div>
+          <div class="divider"></div>
+          <canvas id="radar" height="220"></canvas>
+          <div class="divider"></div>
+          <div class="kpi">
+            <div class="k"><div class="v" id="s1">0</div><div class="l">Controle Inibitório (0–80)</div></div>
+            <div class="k"><div class="v" id="s2">0</div><div class="l">Gestão do Risco (0–80)</div></div>
+            <div class="k"><div class="v" id="s3">0</div><div class="l">Autonomia Decisional (0–80)</div></div>
+            <div class="k"><div class="v" id="s4">0</div><div class="l">Aprendizado Adaptativo (0–80)</div></div>
+          </div>
+          <div class="divider"></div>
+          <div class="actions">
+            <button id="btnPrint" class="btn ghost" type="button">Imprimir / Salvar PDF</button>
+            <button id="btnRestart" class="btn ghost" type="button">Refazer teste</button>
+            <button id="btnClear" class="btn danger" type="button">Apagar dados</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="inner">
+          <div class="sectionTitle"><h3>Devolutiva oficial</h3></div>
+          <div id="devolutiva" class="small" style="line-height:1.65"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+  // ============================
+  // Dados do questionário (64 itens) — EXATAMENTE como no documento atual
+  // Dimensões (0–80) / 16 itens por dimensão
+  // ============================
+
+  const DIMENSIONS = [
+    { key: 'CI', label: 'Controle Inibitório', max: 80, level: levelDefaultCI },
+    { key: 'GR', label: 'Gestão do Risco', max: 80, level: levelDefaultGR },
+    { key: 'AD', label: 'Autonomia Decisional', max: 80, level: levelDefaultAD },
+    { key: 'AA', label: 'Aprendizado Adaptativo', max: 80, level: levelDefaultAA },
+  ];
+
+  // Mantém a ordem: Dimensão 1 (16), Dimensão 2 (16), Dimensão 3 (16), Dimensão 4 (16)
+  const QUESTIONS = [
+    // DIM 1 — Controle Inibitório (16)
+    "Quando identifico uma possível entrada, consigo esperar a confirmação completa do meu plano.",
+    "Mesmo vendo o preço se mover rápido, evito entrar sem checklist mental claro.",
+    "Consigo observar o mercado sem sentir necessidade imediata de agir.",
+    "Quando sinto impulso de entrar, faço uma pausa consciente antes de clicar.",
+
+    "Consigo manter clareza mental após uma sequência de perdas.",
+    "Evito aumentar risco quando estou eufórico após ganhos consecutivos.",
+    "Minha emoção raramente dita o momento da entrada ou saída.",
+    "Consigo identificar quando estou emocionalmente instável antes de operar.",
+
+    "Sigo minhas regras mesmo quando o mercado parece \"imperdível\".",
+    "Evito ajustar stops ou alvos por desconforto emocional.",
+    "Tenho critérios claros independentemente do trade anterior.",
+    "Prefiro perder uma oportunidade do que violar meu plano.",
+
+    "Consigo ficar fora do mercado sem ansiedade excessiva.",
+    "Não opero apenas para \"não ficar de fora\".",
+    "Tomo decisões com calma mesmo em movimentos rápidos.",
+    "Aceito que boas oportunidades sempre voltarão.",
+
+    // DIM 2 — Gestão do Risco (16)
+    "Consigo encerrar uma operação no stop sem hesitar excessivamente.",
+    "Após um loss, mantenho clareza para a próxima decisão.",
+    "Não interpreto o loss como falha pessoal.",
+    "Aceito o stop como custo operacional.",
+
+    "Ajusto meu lote de acordo com o risco do trade.",
+    "Mantenho risco por trade previamente definido.",
+    "Evito aumentar exposição para recuperar prejuízo.",
+    "Meu tamanho de posição é consistente.",
+
+    "Não deixo de entrar em boas oportunidades por medo.",
+    "Executo o plano mesmo após perdas recentes.",
+    "O medo raramente me paralisa.",
+    "Confio mais na estatística do método do que na emoção.",
+
+    "Avalio resultados por séries de trades.",
+    "Evito mudar estratégia após poucos losses.",
+    "Mantenho disciplina em drawdowns.",
+    "Entendo o longo prazo como referência.",
+
+    // DIM 3 — Autonomia Decisional (16)
+    "Minhas decisões são pouco influenciadas por terceiros.",
+    "Mantenho meu plano mesmo com opiniões contrárias.",
+    "Não altero decisões por comentários externos.",
+    "Opero com clareza sozinho ou em grupo.",
+
+    "Confio na minha leitura mesmo em cenários difíceis.",
+    "Executo setups válidos sem validação externa.",
+    "Minha análise sustenta minhas decisões.",
+    "Não abandono o plano por insegurança momentânea.",
+
+    "Evito comparar meus resultados com outros traders.",
+    "Não me sinto pressionado por ganhos alheios.",
+    "Mantenho estratégia independentemente de terceiros.",
+    "Foco na minha evolução.",
+
+    "Assumo total responsabilidade pelos resultados.",
+    "Não culpo o mercado ou terceiros.",
+    "Analiso minhas decisões antes de fatores externos.",
+    "Uso resultados como feedback pessoal.",
+
+    // DIM 4 — Aprendizado Adaptativo (16)
+    "Analiso minhas operações após o pregão.",
+    "Registro erros e acertos conscientemente.",
+    "Uso dados para ajustar decisões futuras.",
+    "Reviso trades sem carga emocional excessiva.",
+
+    "Ajusto estratégias sem abandonar método.",
+    "Reconheço quando o mercado muda.",
+    "Evito rigidez excessiva.",
+    "Consigo evoluir sem perder consistência.",
+
+    "Transformo erros em aprendizado prático.",
+    "Não repito falhas por negligência.",
+    "Uso perdas como feedback.",
+    "Aprendo mais com erros do que com ganhos.",
+
+    "Evito excesso de confiança após ganhos.",
+    "Mantenho disciplina em fases positivas.",
+    "Não aumento risco apenas por euforia.",
+    "Trato consistência como prioridade.",
+  ];
+
+  // ----------------------------
+  // Devolutiva oficial (texto) — já finalizada
+  // ----------------------------
+  const DEVOLUTIVA_HTML = `
+    <div class="badge">Devolutiva oficial — Método ESFERA™</div>
+    <div class="divider"></div>
+
+    <b>Introdução ao Resultado</b><br>
+    Este resultado não define quem você é como trader.<br>
+    Ele revela <b>como sua mente está operando sob risco neste momento</b>.<br><br>
+
+    O Método ESFERA™ busca equilíbrio funcional, não perfeição.<br>
+
+    <div class="divider"></div>
+
+    <b>Leitura Geral do Gráfico</b><br>
+    Quanto mais equilibrado o gráfico, maior a capacidade de sustentar decisões consistentes no mercado.<br>
+    Assimetrias indicam onde o ajuste deve começar.<br>
+
+    <div class="divider"></div>
+
+    <b>Devolutiva por Dimensão</b><br><br>
+
+    <b>Controle Inibitório</b><br>
+    Pontuação baixa indica decisões reativas.<br>
+    Pontuação alta indica autorregulação consciente.<br><br>
+
+    <b>Gestão do Risco</b><br>
+    Pontuação baixa indica medo ou compensação emocional.<br>
+    Pontuação alta indica maturidade diante da perda.<br><br>
+
+    <b>Autonomia Decisional</b><br>
+    Pontuação baixa indica dependência externa.<br>
+    Pontuação alta indica autoria plena.<br><br>
+
+    <b>Aprendizado Adaptativo</b><br>
+    Pontuação baixa indica repetição de erros.<br>
+    Pontuação alta indica evolução contínua.<br>
+
+    <div class="divider"></div>
+
+    <b>Encerramento da Devolutiva</b><br>
+    Seu gráfico mostra <b>onde desenvolver</b>, não onde se julgar.<br><br>
+
+    O próximo passo é trabalhar conscientemente a dimensão mais baixa, elevando comportamentos específicos.<br><br>
+
+    Quando as quatro dimensões se alinham, o resultado deixa de ser emocional e passa a ser <b>estatístico, consistente e sustentável</b>.<br><br>
+
+    <b>Consistência não é força. É forma.</b>
+  `;
+
+  // ============================
+  // Storage
+  // ============================
+  const STORAGE_KEY = 'esfera_v1';
+
+  function loadState(){
+    try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); }
+    catch{ return null; }
+  }
+  function saveState(state){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+  function clearState(){
+    localStorage.removeItem(STORAGE_KEY);
+  }
+
+  // ============================
+  // UI refs
+  // ============================
+  const elLanding = document.getElementById('viewLanding');
+  const elTest = document.getElementById('viewTest');
+  const elResult = document.getElementById('viewResult');
+  const elQuestions = document.getElementById('questions');
+  const elProgressText = document.getElementById('progressText');
+  const elProgressBar = document.getElementById('progressBar');
+  const btnSubmit = document.getElementById('btnSubmit');
+
+  const btnStart = document.getElementById('btnStart');
+  const btnLoad = document.getElementById('btnLoad');
+  const btnSave = document.getElementById('btnSave');
+  const btnBack = document.getElementById('btnBack');
+  const btnReset = document.getElementById('btnReset');
+
+  const btnPrint = document.getElementById('btnPrint');
+  const btnRestart = document.getElementById('btnRestart');
+  const btnClear = document.getElementById('btnClear');
+
+  const inputName = document.getElementById('name');
+  const inputEmail = document.getElementById('email');
+  const inputMarket = document.getElementById('market');
+  const inputExperience = document.getElementById('experience');
+
+  const elWho = document.getElementById('who');
+  const elMeta = document.getElementById('meta');
+  const elDevolutiva = document.getElementById('devolutiva');
+
+  const elS1 = document.getElementById('s1');
+  const elS2 = document.getElementById('s2');
+  const elS3 = document.getElementById('s3');
+  const elS4 = document.getElementById('s4');
+
+  const toast = document.getElementById('toast');
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'), 1800);
+  }
+
+  // ============================
+  // State
+  // ============================
+  let state = {
+    meta: { name:'', email:'', market:'Day Trade', experience:'Iniciante', startedAt: null },
+    answers: Array(QUESTIONS.length).fill(null),
+  };
+
+  // ============================
+  // Render questions
+  // ============================
+  function renderQuestions(){
+    elQuestions.innerHTML = '';
+
+    QUESTIONS.forEach((text, idx)=>{
+      const q = document.createElement('div');
+      q.className = 'q';
+
+      const top = document.createElement('div');
+      top.className = 'qTop';
+
+      const left = document.createElement('div');
+      left.style.display = 'flex';
+      left.style.gap = '10px';
+      left.style.flex = '1';
+
+      const qi = document.createElement('div');
+      qi.className = 'qIdx';
+      qi.textContent = `#${idx+1}`;
+
+      const qt = document.createElement('div');
+      qt.className = 'qText';
+      qt.textContent = text;
+
+      left.appendChild(qi);
+      left.appendChild(qt);
+
+      top.appendChild(left);
+      q.appendChild(top);
+
+      const scale = document.createElement('div');
+      scale.className = 'scale';
+
+      for(let v=1; v<=5; v++){
+        const lab = document.createElement('label');
+        lab.className = 'opt';
+        if(state.answers[idx] === v) lab.classList.add('sel');
+
+        const inp = document.createElement('input');
+        inp.type = 'radio';
+        inp.name = `q_${idx}`;
+        inp.value = String(v);
+        inp.checked = state.answers[idx] === v;
+
+        inp.addEventListener('change', ()=>{
+          state.answers[idx] = v;
+          // visual
+          [...scale.querySelectorAll('.opt')].forEach(o=>o.classList.remove('sel'));
+          lab.classList.add('sel');
+          updateProgress();
+          autosave();
+        });
+
+        const t = document.createElement('span');
+        t.textContent = String(v);
+
+        lab.appendChild(inp);
+        lab.appendChild(t);
+        scale.appendChild(lab);
+      }
+
+      q.appendChild(scale);
+      elQuestions.appendChild(q);
+    });
+
+    updateProgress();
+  }
+
+  function answeredCount(){
+    return state.answers.filter(v=>typeof v === 'number').length;
+  }
+
+  function updateProgress(){
+    const done = answeredCount();
+    const total = QUESTIONS.length;
+    elProgressText.textContent = `${done}/${total}`;
+    elProgressBar.style.width = `${Math.round((done/total)*100)}%`;
+    btnSubmit.disabled = done !== total;
+  }
+
+  function autosave(){
+    saveState(state);
+  }
+
+  // ============================
+  // Navigation
+  // ============================
+  function showLanding(){
+    elLanding.style.display = '';
+    elTest.style.display = 'none';
+    elResult.style.display = 'none';
+  }
+  function showTest(){
+    elLanding.style.display = 'none';
+    elTest.style.display = '';
+    elResult.style.display = 'none';
+    renderQuestions();
+  }
+  function showResult(){
+    elLanding.style.display = 'none';
+    elTest.style.display = 'none';
+    elResult.style.display = '';
+  }
+
+  // ============================
+  // Scoring
+  // ============================
+  function sumRange(start, endExclusive){
+    let s = 0;
+    for(let i=start;i<endExclusive;i++) s += state.answers[i] || 0;
+    return s;
+  }
+
+  function computeScores(){
+    // 16 itens por dimensão
+    const s1 = sumRange(0,16);
+    const s2 = sumRange(16,32);
+    const s3 = sumRange(32,48);
+    const s4 = sumRange(48,64);
+
+    return {
+      CI: s1,
+      GR: s2,
+      AD: s3,
+      AA: s4,
+    };
+  }
+
+  function levelFromScore(score, mode){
+    // Mesmos intervalos do documento: 0–29, 30–49, 50–64, 65–80
+    if(score <= 29) return mode[0];
+    if(score <= 49) return mode[1];
+    if(score <= 64) return mode[2];
+    return mode[3];
+  }
+
+  function levelDefaultCI(){ return ["crítico","instável","funcional","avançado"]; }
+  function levelDefaultGR(){ return ["disfuncional","instável","funcional","avançado"]; }
+  function levelDefaultAD(){ return ["dependência crítica","instável","funcional","avançado"]; }
+  function levelDefaultAA(){ return ["rigidez crítica","instável","funcional","avançado"]; }
+
+  // ============================
+  // Radar chart
+  // ============================
+  let radarChart = null;
+  function renderRadar(scores){
+    const ctx = document.getElementById('radar');
+
+    // Destrói anterior
+    if(radarChart) radarChart.destroy();
+
+    radarChart = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: ["Controle Inibitório","Gestão do Risco","Autonomia Decisional","Aprendizado Adaptativo"],
+        datasets: [{
+          label: 'ESFERA™ (0–80)',
+          data: [scores.CI, scores.GR, scores.AD, scores.AA],
+          borderWidth: 2,
+          pointRadius: 3,
+          fill: true,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { labels: { color: '#e9ecf1' } }
+        },
+        scales: {
+          r: {
+            min: 0,
+            max: 80,
+            ticks: { stepSize: 10, color: '#aab3c2', backdropColor: 'transparent' },
+            angleLines: { color: 'rgba(34,48,74,.9)' },
+            grid: { color: 'rgba(34,48,74,.7)' },
+            pointLabels: { color: '#e9ecf1', font: { size: 12, weight: 600 } },
+          }
+        }
+      }
+    });
+  }
+
+  // ============================
+  // Result view
+  // ============================
+  function presentResult(){
+    const scores = computeScores();
+
+    elS1.textContent = String(scores.CI);
+    elS2.textContent = String(scores.GR);
+    elS3.textContent = String(scores.AD);
+    elS4.textContent = String(scores.AA);
+
+    const meta = state.meta;
+    elWho.textContent = meta.name ? meta.name : '';
+    elMeta.textContent = `${meta.market} • ${meta.experience}`;
+
+    elDevolutiva.innerHTML = DEVOLUTIVA_HTML + `
+      <div class="divider"></div>
+      <div class="badge">Níveis interpretativos (0–80)</div>
+      <div class="small muted" style="margin-top:8px;line-height:1.7">
+        <b>Controle Inibitório</b>: ${levelFromScore(scores.CI, levelDefaultCI())}<br>
+        <b>Gestão do Risco</b>: ${levelFromScore(scores.GR, levelDefaultGR())}<br>
+        <b>Autonomia Decisional</b>: ${levelFromScore(scores.AD, levelDefaultAD())}<br>
+        <b>Aprendizado Adaptativo</b>: ${levelFromScore(scores.AA, levelDefaultAA())}
+      </div>
+    `;
+
+    renderRadar(scores);
+  }
+
+  // ============================
+  // Actions
+  // ============================
+  btnStart.addEventListener('click', ()=>{
+if (!inputEmail.value.trim()) {
+  showToast("Preencha seu e-mail para receber o resultado.");
+  return;
+}
+
+    state.meta.name = inputName.value.trim();
+    state.meta.email = inputEmail.value.trim();
+    state.meta.market = inputMarket.value;
+    state.meta.experience = inputExperience.value;
+    state.meta.startedAt = state.meta.startedAt || new Date().toISOString();
+    autosave();
+    showTest();
+  });
+
+  btnLoad.addEventListener('click', ()=>{
+    const prev = loadState();
+    if(!prev){
+      showToast('Nenhum progresso salvo.');
+      return;
+    }
+    state = prev;
+    // preenche campos na landing
+    inputName.value = state.meta?.name || '';
+    inputEmail.value = state.meta?.email || '';
+    inputMarket.value = state.meta?.market || 'Day Trade';
+    inputExperience.value = state.meta?.experience || 'Iniciante';
+    showTest();
+    showToast('Progresso carregado.');
+  });
+
+  btnSave.addEventListener('click', ()=>{
+    autosave();
+    showLanding();
+    showToast('Salvo. Você pode continuar depois.');
+  });
+
+  btnBack.addEventListener('click', ()=>{
+    showLanding();
+  });
+
+ btnSubmit.addEventListener('click', async ()=>{
+  autosave();
+
+  const scores = computeScores();
+
+  const payload = {
+    meta: {
+      name: state.meta.name || "",
+      email: state.meta.email || "",
+      market: state.meta.market || "",
+      experience: state.meta.experience || ""
+    },
+    scores,
+    levels: {
+      CI: levelFromScore(scores.CI, levelDefaultCI()),
+      GR: levelFromScore(scores.GR, levelDefaultGR()),
+      AD: levelFromScore(scores.AD, levelDefaultAD()),
+      AA: levelFromScore(scores.AA, levelDefaultAA())
+    },
+    createdAt: new Date().toISOString()
+  };
+
+  const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwg-ICFCaQtrQAu-SrFZYbA-wIp1JsAMmv6b2Z7aMRcoVzyerpTGVp7xqTbjpqrw1YX6w/exec";
+
+  try {
+    const res = await fetch(WEBAPP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const json = await res.json().catch(()=>null);
+
+    if (!json || !json.ok) {
+      showToast("Resultado gerado, mas falhou o envio por e-mail.");
+    } else {
+      showToast("Resultado gerado e enviado por e-mail.");
+    }
+  } catch (e) {
+    showToast("Resultado gerado, mas não foi possível enviar por e-mail.");
+  }
+
+  presentResult();
+  showResult();
+});
+
+  btnPrint.addEventListener('click', ()=>{
+    window.print();
+  });
+
+  btnRestart.addEventListener('click', ()=>{
+    state.answers = Array(QUESTIONS.length).fill(null);
+    autosave();
+    showTest();
+    showToast('Teste reiniciado.');
+  });
+
+  btnClear.addEventListener('click', ()=>{
+    clearState();
+    state = { meta: { name:'', email:'', market:'Day Trade', experience:'Iniciante', startedAt:null }, answers: Array(QUESTIONS.length).fill(null) };
+    inputName.value=''; inputEmail.value=''; inputMarket.value='Day Trade'; inputExperience.value='Iniciante';
+    showLanding();
+    showToast('Dados apagados.');
+  });
+
+  btnReset.addEventListener('click', ()=>{
+    clearState();
+    state = { meta: { name:'', email:'', market:'Day Trade', experience:'Iniciante', startedAt:null }, answers: Array(QUESTIONS.length).fill(null) };
+    inputName.value=''; inputEmail.value='';
+    showLanding();
+    showToast('Reiniciado.');
+  });
+
+  // ============================
+  // Boot
+  // ============================
+  (function init(){
+    const prev = loadState();
+    if(prev){
+      // carrega meta na landing
+      inputName.value = prev.meta?.name || '';
+      inputEmail.value = prev.meta?.email || '';
+      inputMarket.value = prev.meta?.market || 'Day Trade';
+      inputExperience.value = prev.meta?.experience || 'Iniciante';
+      btnLoad.textContent = 'Continuar (progresso encontrado)';
+    } else {
+      btnLoad.textContent = 'Continuar (se houver)';
+    }
+    showLanding();
+  })();
+</script>
+</body>
+</html>
