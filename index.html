@@ -123,7 +123,7 @@
               <input id="name" placeholder="Ex.: Jhow" autocomplete="name" />
             </div>
             <div>
-              <label for="email">Email (opcional)</label>
+              <label for="email">Email</label>
               <input id="email" placeholder="voce@exemplo.com" autocomplete="email" />
             </div>
             <div>
@@ -755,22 +755,27 @@ if (!inputEmail.value.trim()) {
 
   const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwg-ICFCaQtrQAu-SrFZYbA-wIp1JsAMmv6b2Z7aMRcoVzyerpTGVp7xqTbjpqrw1YX6w/exec";
 
-  try {
-    const res = await fetch(WEBAPP_URL, {
+   try {
+    // Envio mais confiável (evita CORS em muitos cenários)
+    const sent = navigator.sendBeacon(
+      WEBAPP_URL,
+      new Blob([JSON.stringify(payload)], { type: "text/plain" })
+    );
+
+    // Reforço: envia também via fetch sem CORS (não dá para ler resposta)
+    fetch(WEBAPP_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain" },
       body: JSON.stringify(payload)
-    });
+    }).catch(()=>{});
 
-    const json = await res.json().catch(()=>null);
-
-    if (!json || !json.ok) {
-      showToast("Resultado gerado, mas falhou o envio por e-mail.");
-    } else {
-      showToast("Resultado gerado e enviado por e-mail.");
-    }
+    showToast(sent
+      ? "Resultado gerado e enviado por e-mail."
+      : "Resultado gerado. Tentando enviar por e-mail..."
+    );
   } catch (e) {
-    showToast("Resultado gerado, mas não foi possível enviar por e-mail.");
+    showToast("Resultado gerado, mas falhou o envio por e-mail.");
   }
 
   presentResult();
