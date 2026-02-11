@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ESFERA™ — TradeMind Profiler 2.0</title>
+  <title>ESFERA™ — Diagnóstico ESFERA™</title>
   <meta name="description" content="Ferramenta digital do Método ESFERA™ — avaliação dimensional da mente do trader." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -101,7 +101,7 @@
       <div class="brand">
         <div class="logo">E</div>
         <div>
-          <h1>ESFERA™ — TradeMind Profiler 2.0</h1>
+          <h1>ESFERA™ — Diagnóstico ESFERA™</h1>
           <div class="pill">Ferramenta digital • Landing + Teste + Resultado</div>
         </div>
       </div>
@@ -259,8 +259,12 @@
 
 <script>
   // ============================
-  // Dados do questionário (64 itens) — EXATAMENTE como no documento atual
-  // Dimensões (0–80) / 16 itens por dimensão
+  // URL do Web App (Apps Script)
+  // ============================
+  const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwWbLUImALg8tERWfJfNCSPmgJPh4ZBZiNk7po2elW0nUU8mycJv2B6np2FFpeSAVvY/exec";
+
+  // ============================
+  // Dados do questionário (64 itens)
   // ============================
 
   const DIMENSIONS = [
@@ -270,7 +274,6 @@
     { key: 'AA', label: 'Aprendizado Adaptativo', max: 80, level: levelDefaultAA },
   ];
 
-  // Mantém a ordem: Dimensão 1 (16), Dimensão 2 (16), Dimensão 3 (16), Dimensão 4 (16)
   const QUESTIONS = [
     // DIM 1 — Controle Inibitório (16)
     "Quando identifico uma possível entrada, consigo esperar a confirmação completa do meu plano.",
@@ -358,7 +361,7 @@
   ];
 
   // ----------------------------
-  // Devolutiva oficial (texto) — já finalizada
+  // Devolutiva oficial (texto)
   // ----------------------------
   const DEVOLUTIVA_HTML = `
     <div class="badge">Devolutiva oficial — Método ESFERA™</div>
@@ -463,7 +466,7 @@
   function showToast(msg){
     toast.textContent = msg;
     toast.classList.add('show');
-    setTimeout(()=>toast.classList.remove('show'), 1800);
+    setTimeout(()=>toast.classList.remove('show'), 2200);
   }
 
   // ============================
@@ -522,7 +525,6 @@
 
         inp.addEventListener('change', ()=>{
           state.answers[idx] = v;
-          // visual
           [...scale.querySelectorAll('.opt')].forEach(o=>o.classList.remove('sel'));
           lab.classList.add('sel');
           updateProgress();
@@ -590,22 +592,15 @@
   }
 
   function computeScores(){
-    // 16 itens por dimensão
     const s1 = sumRange(0,16);
     const s2 = sumRange(16,32);
     const s3 = sumRange(32,48);
     const s4 = sumRange(48,64);
 
-    return {
-      CI: s1,
-      GR: s2,
-      AD: s3,
-      AA: s4,
-    };
+    return { CI: s1, GR: s2, AD: s3, AA: s4 };
   }
 
   function levelFromScore(score, mode){
-    // Mesmos intervalos do documento: 0–29, 30–49, 50–64, 65–80
     if(score <= 29) return mode[0];
     if(score <= 49) return mode[1];
     if(score <= 64) return mode[2];
@@ -624,7 +619,6 @@
   function renderRadar(scores){
     const ctx = document.getElementById('radar');
 
-    // Destrói anterior
     if(radarChart) radarChart.destroy();
 
     radarChart = new Chart(ctx, {
@@ -688,13 +682,30 @@
   }
 
   // ============================
+  // Envio para Apps Script (mais confiável)
+  // - 1 request só
+  // - keepalive: melhora quando a página troca de view
+  // - sem "sendBeacon" pra evitar falso positivo
+  // ============================
+  async function sendToWebApp(payload){
+    // Não dá pra ler resposta com no-cors, mas garante que o browser tenta enviar.
+    await fetch(WEBAPP_URL, {
+      method: "POST",
+      mode: "no-cors",
+      keepalive: true,
+      headers: { "Content-Type": "text/plain;charset=UTF-8" },
+      body: JSON.stringify(payload)
+    });
+  }
+
+  // ============================
   // Actions
   // ============================
   btnStart.addEventListener('click', ()=>{
-if (!inputEmail.value.trim()) {
-  showToast("Preencha seu e-mail para receber o resultado.");
-  return;
-}
+    if (!inputEmail.value.trim()) {
+      showToast("Preencha seu e-mail para receber o resultado.");
+      return;
+    }
 
     state.meta.name = inputName.value.trim();
     state.meta.email = inputEmail.value.trim();
@@ -712,7 +723,6 @@ if (!inputEmail.value.trim()) {
       return;
     }
     state = prev;
-    // preenche campos na landing
     inputName.value = state.meta?.name || '';
     inputEmail.value = state.meta?.email || '';
     inputMarket.value = state.meta?.market || 'Day Trade';
@@ -731,52 +741,66 @@ if (!inputEmail.value.trim()) {
     showLanding();
   });
 
-btnSubmit.addEventListener('click', async ()=>{
-  autosave();
+  btnSubmit.addEventListener('click', async ()=>{
+    autosave();
 
-  const scores = computeScores();
+    const scores = computeScores();
 
-  const payload = {
-    meta: {
-      name: state.meta.name || "",
-      email: state.meta.email || "",
-      market: state.meta.market || "",
-      experience: state.meta.experience || ""
-    },
-    scores,
-    levels: {
-      CI: levelFromScore(scores.CI, levelDefaultCI()),
-      GR: levelFromScore(scores.GR, levelDefaultGR()),
-      AD: levelFromScore(scores.AD, levelDefaultAD()),
-      AA: levelFromScore(scores.AA, levelDefaultAA())
-    },
-    createdAt: new Date().toISOString()
-  };
-
-  const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwWbLUImALg8tERWfJfNCSPmgJPh4ZBZiNk7po2elW0nUU8mycJv2B6np2FFpeSAVvY/exec";
+    const payload = {
+      meta: {
+        name: state.meta.name || "",
+        email: state.meta.email || "",
+        market: state.meta.market || "",
+        experience: state.meta.experience || ""
+      },
+      scores,
+      levels: {
+        CI: levelFromScore(scores.CI, levelDefaultCI()),
+        GR: levelFromScore(scores.GR, levelDefaultGR()),
+        AD: levelFromScore(scores.AD, levelDefaultAD()),
+        AA: levelFromScore(scores.AA, levelDefaultAA())
+      },
+      createdAt: new Date().toISOString()
+    };
 
     try {
-    // Envio mais confiável (evita CORS em muitos cenários)
-    const sent = navigator.sendBeacon(
-      WEBAPP_URL,
-      new Blob([JSON.stringify(payload)], { type: "text/plain" })
-    );
+      // dispara envio (não bloqueia render do resultado)
+      sendToWebApp(payload).catch(()=>{});
+      showToast("Resultado gerado. Se o e-mail não cair em 1–2 min, verifique Spam/Promoções.");
+    } catch (e) {
+      showToast("Resultado gerado, mas falhou o envio por e-mail.");
+    }
 
-    // Reforço: envia também via fetch sem CORS (não dá para ler resposta)
-    fetch(WEBAPP_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "text/plain" },
-      body: JSON.stringify(payload)
-    }).catch(()=>{});
+    presentResult();
+    showResult();
+  });
 
-    showToast(sent
-      ? "Resultado gerado e enviado por e-mail."
-      : "Resultado gerado. Tentando enviar por e-mail..."
-    );
-  } catch (e) {
-    showToast("Resultado gerado, mas falhou o envio por e-mail.");
-  }
+  btnPrint.addEventListener('click', ()=>{
+    window.print();
+  });
+
+  btnRestart.addEventListener('click', ()=>{
+    state.answers = Array(QUESTIONS.length).fill(null);
+    autosave();
+    showTest();
+    showToast('Teste reiniciado.');
+  });
+
+  btnClear.addEventListener('click', ()=>{
+    clearState();
+    state = { meta: { name:'', email:'', market:'Day Trade', experience:'Iniciante', startedAt:null }, answers: Array(QUESTIONS.length).fill(null) };
+    inputName.value=''; inputEmail.value=''; inputMarket.value='Day Trade'; inputExperience.value='Iniciante';
+    showLanding();
+    showToast('Dados apagados.');
+  });
+
+  btnReset.addEventListener('click', ()=>{
+    clearState();
+    state = { meta: { name:'', email:'', market:'Day Trade', experience:'Iniciante', startedAt:null }, answers: Array(QUESTIONS.length).fill(null) };
+    inputName.value=''; inputEmail.value='';
+    showLanding();
+    showToast('Reiniciado.');
+  });
 
   // ============================
   // Boot
@@ -784,7 +808,6 @@ btnSubmit.addEventListener('click', async ()=>{
   (function init(){
     const prev = loadState();
     if(prev){
-      // carrega meta na landing
       inputName.value = prev.meta?.name || '';
       inputEmail.value = prev.meta?.email || '';
       inputMarket.value = prev.meta?.market || 'Day Trade';
