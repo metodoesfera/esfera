@@ -136,6 +136,15 @@
 
     .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;background:rgba(17,21,34,.95);border:1px solid rgba(34,48,74,.9);color:var(--text);padding:10px 12px;border-radius:14px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.18s opacity}
     .toast.show{opacity:1}
+/* força tamanho e destaque do logo no topo */
+.brand .logo-img{
+  height: 104px !important;   /* pode testar 88px, 104px ou 120px */
+  width: auto !important;
+  display: block;
+  filter: brightness(0) invert(1) drop-shadow(0 10px 22px rgba(0,0,0,.50));
+  opacity: 1;
+}
+
   </style>
 </head>
 
