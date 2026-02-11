@@ -36,10 +36,10 @@
 
       /* ✅ Gradientes mais suaves + base mais clara */
       background:
-        radial-gradient(1200px 700px at 18% 12%, rgba(124,92,255,.28), transparent 60%),
-radial-gradient(1000px 650px at 82% 18%, rgba(25,195,125,.18), transparent 62%),
-radial-gradient(900px 700px at 50% 95%, rgba(255,255,255,.10), transparent 58%),
-linear-gradient(180deg, #0f1a33 0%, #0b1326 100%);
+        radial-gradient(1200px 700px at 18% 12%, rgba(124,92,255,.12), transparent 70%),
+radial-gradient(1000px 650px at 82% 18%, rgba(25,195,125,.08), transparent 72%),
+radial-gradient(900px 700px at 50% 95%, rgba(255,255,255,.04), transparent 70%),
+var(--bg);
 
 
       color:var(--text)
@@ -71,17 +71,12 @@ linear-gradient(180deg, #0f1a33 0%, #0b1326 100%);
 
     /* ✅ Logo maior + branco (sem editar a imagem) */
     .logo-img{
-      height:56px;      /* antes 42px */
-      width:auto;
-      display:block;
+  height:72px;   /* <-- aumenta aqui */
+  width:auto;
+  display:block;
+  filter: brightness(0) invert(1) drop-shadow(0 10px 28px rgba(0,0,0,.55));
+}
 
-      /* deixa branco mesmo se vier colorido/escuro */
-      filter:
-        brightness(0) invert(1)
-        drop-shadow(0 10px 22px rgba(0,0,0,.45));
-
-      opacity: .98;
-    }
 
     /* (mantive este bloco, mas ele não é o principal agora) */
     .brand img{
