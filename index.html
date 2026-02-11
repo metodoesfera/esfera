@@ -9,9 +9,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" integrity="sha256-0OGnR7nqX5zUoC5VAbuM6dp3z8Cfb6l2eE3n0O4Cj3s=" crossorigin="anonymous"></script>
+
   <style>
     :root{
-      --bg:#111a2e;
+      /* ✅ Fundo mais claro (área "1") */
+      --bg:#18243a;
+
       --card:#111522;
       --card2:#0f1320;
       --text:#e9ecf1;
@@ -24,36 +27,53 @@
       --radius:18px;
       --shadow:0 20px 60px rgba(0,0,0,.45);
     }
+
     *{box-sizing:border-box}
+
     body{
-  margin:0;
-  font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
-  background:
-  radial-gradient(1200px 700px at 18% 12%, rgba(124,92,255,.22), transparent 62%),
-  radial-gradient(1000px 650px at 82% 18%, rgba(25,195,125,.14), transparent 64%),
-  radial-gradient(900px 700px at 50% 95%, rgba(255,255,255,.05), transparent 60%),
-  var(--bg);
-  color:var(--text)
-}
+      margin:0;
+      font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+
+      /* ✅ Gradientes mais suaves + base mais clara */
+      background:
+        radial-gradient(1200px 700px at 18% 12%, rgba(124,92,255,.18), transparent 64%),
+        radial-gradient(1000px 650px at 82% 18%, rgba(25,195,125,.10), transparent 66%),
+        radial-gradient(900px 700px at 50% 95%, rgba(255,255,255,.06), transparent 62%),
+        var(--bg);
+
+      color:var(--text)
+    }
+
     a{color:inherit}
     .wrap{max-width:1080px;margin:0 auto;padding:32px 18px 80px}
     .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
-    .brand{display:flex;align-items:center;gap:10px}
+    .brand{display:flex;align-items:center;gap:12px}
+
     .logo{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#3dd6ff);display:grid;place-items:center;font-weight:800;box-shadow:0 12px 40px rgba(124,92,255,.25)}
     .brand h1{font-size:16px;margin:0}
-.brand img{
-  height: 22px;          /* ajuste fino se quiser */
-  width: auto;
-  display: block;
-  filter: brightness(0) invert(1);
-  opacity: .95;
-}
-.logo-img{
-  height:42px;
-  width:auto;
-  display:block;
-  filter: drop-shadow(0 6px 18px rgba(0,0,0,.45));
-}
+
+    /* ✅ Logo maior + branco (sem editar a imagem) */
+    .logo-img{
+      height:56px;      /* antes 42px */
+      width:auto;
+      display:block;
+
+      /* deixa branco mesmo se vier colorido/escuro */
+      filter:
+        brightness(0) invert(1)
+        drop-shadow(0 10px 22px rgba(0,0,0,.45));
+
+      opacity: .98;
+    }
+
+    /* (mantive este bloco, mas ele não é o principal agora) */
+    .brand img{
+      height: 22px;
+      width: auto;
+      display: block;
+      filter: brightness(0) invert(1);
+      opacity: .95;
+    }
 
     .pill{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:7px 10px;border-radius:999px;background:rgba(17,21,34,.55)}
 
@@ -118,6 +138,7 @@
     .toast.show{opacity:1}
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <div class="topbar">
@@ -286,10 +307,6 @@
   // ============================
   const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwWbLUImALg8tERWfJfNCSPmgJPh4ZBZiNk7po2elW0nUU8mycJv2B6np2FFpeSAVvY/exec";
 
-  // ============================
-  // Dados do questionário (64 itens)
-  // ============================
-
   const DIMENSIONS = [
     { key: 'CI', label: 'Controle Inibitório', max: 80, level: levelDefaultCI },
     { key: 'GR', label: 'Gestão do Risco', max: 80, level: levelDefaultGR },
@@ -298,145 +315,105 @@
   ];
 
   const QUESTIONS = [
-    // DIM 1 — Controle Inibitório (16)
     "Quando identifico uma possível entrada, consigo esperar a confirmação completa do meu plano.",
     "Mesmo vendo o preço se mover rápido, evito entrar sem checklist mental claro.",
     "Consigo observar o mercado sem sentir necessidade imediata de agir.",
     "Quando sinto impulso de entrar, faço uma pausa consciente antes de clicar.",
-
     "Consigo manter clareza mental após uma sequência de perdas.",
     "Evito aumentar risco quando estou eufórico após ganhos consecutivos.",
     "Minha emoção raramente dita o momento da entrada ou saída.",
     "Consigo identificar quando estou emocionalmente instável antes de operar.",
-
     "Sigo minhas regras mesmo quando o mercado parece \"imperdível\".",
     "Evito ajustar stops ou alvos por desconforto emocional.",
     "Tenho critérios claros independentemente do trade anterior.",
     "Prefiro perder uma oportunidade do que violar meu plano.",
-
     "Consigo ficar fora do mercado sem ansiedade excessiva.",
     "Não opero apenas para \"não ficar de fora\".",
     "Tomo decisões com calma mesmo em movimentos rápidos.",
     "Aceito que boas oportunidades sempre voltarão.",
-
-    // DIM 2 — Gestão do Risco (16)
     "Consigo encerrar uma operação no stop sem hesitar excessivamente.",
     "Após um loss, mantenho clareza para a próxima decisão.",
     "Não interpreto o loss como falha pessoal.",
     "Aceito o stop como custo operacional.",
-
     "Ajusto meu lote de acordo com o risco do trade.",
     "Mantenho risco por trade previamente definido.",
     "Evito aumentar exposição para recuperar prejuízo.",
     "Meu tamanho de posição é consistente.",
-
     "Não deixo de entrar em boas oportunidades por medo.",
     "Executo o plano mesmo após perdas recentes.",
     "O medo raramente me paralisa.",
     "Confio mais na estatística do método do que na emoção.",
-
     "Avalio resultados por séries de trades.",
     "Evito mudar estratégia após poucos losses.",
     "Mantenho disciplina em drawdowns.",
     "Entendo o longo prazo como referência.",
-
-    // DIM 3 — Autonomia Decisional (16)
     "Minhas decisões são pouco influenciadas por terceiros.",
     "Mantenho meu plano mesmo com opiniões contrárias.",
     "Não altero decisões por comentários externos.",
     "Opero com clareza sozinho ou em grupo.",
-
     "Confio na minha leitura mesmo em cenários difíceis.",
     "Executo setups válidos sem validação externa.",
     "Minha análise sustenta minhas decisões.",
     "Não abandono o plano por insegurança momentânea.",
-
     "Evito comparar meus resultados com outros traders.",
     "Não me sinto pressionado por ganhos alheios.",
     "Mantenho estratégia independentemente de terceiros.",
     "Foco na minha evolução.",
-
     "Assumo total responsabilidade pelos resultados.",
     "Não culpo o mercado ou terceiros.",
     "Analiso minhas decisões antes de fatores externos.",
     "Uso resultados como feedback pessoal.",
-
-    // DIM 4 — Aprendizado Adaptativo (16)
     "Analiso minhas operações após o pregão.",
     "Registro erros e acertos conscientemente.",
     "Uso dados para ajustar decisões futuras.",
     "Reviso trades sem carga emocional excessiva.",
-
     "Ajusto estratégias sem abandonar método.",
     "Reconheço quando o mercado muda.",
     "Evito rigidez excessiva.",
     "Consigo evoluir sem perder consistência.",
-
     "Transformo erros em aprendizado prático.",
     "Não repito falhas por negligência.",
     "Uso perdas como feedback.",
     "Aprendo mais com erros do que com ganhos.",
-
     "Evito excesso de confiança após ganhos.",
     "Mantenho disciplina em fases positivas.",
     "Não aumento risco apenas por euforia.",
     "Trato consistência como prioridade.",
   ];
 
-  // ----------------------------
-  // Devolutiva oficial (texto)
-  // ----------------------------
   const DEVOLUTIVA_HTML = `
     <div class="badge">Devolutiva oficial — Método ESFERA™</div>
     <div class="divider"></div>
-
     <b>Introdução ao Resultado</b><br>
     Este resultado não define quem você é como trader.<br>
     Ele revela <b>como sua mente está operando sob risco neste momento</b>.<br><br>
-
     O Método ESFERA™ busca equilíbrio funcional, não perfeição.<br>
-
     <div class="divider"></div>
-
     <b>Leitura Geral do Gráfico</b><br>
     Quanto mais equilibrado o gráfico, maior a capacidade de sustentar decisões consistentes no mercado.<br>
     Assimetrias indicam onde o ajuste deve começar.<br>
-
     <div class="divider"></div>
-
     <b>Devolutiva por Dimensão</b><br><br>
-
     <b>Controle Inibitório</b><br>
     Pontuação baixa indica decisões reativas.<br>
     Pontuação alta indica autorregulação consciente.<br><br>
-
     <b>Gestão do Risco</b><br>
     Pontuação baixa indica medo ou compensação emocional.<br>
     Pontuação alta indica maturidade diante da perda.<br><br>
-
     <b>Autonomia Decisional</b><br>
     Pontuação baixa indica dependência externa.<br>
     Pontuação alta indica autoria plena.<br><br>
-
     <b>Aprendizado Adaptativo</b><br>
     Pontuação baixa indica repetição de erros.<br>
     Pontuação alta indica evolução contínua.<br>
-
     <div class="divider"></div>
-
     <b>Encerramento da Devolutiva</b><br>
     Seu gráfico mostra <b>onde desenvolver</b>, não onde se julgar.<br><br>
-
     O próximo passo é trabalhar conscientemente a dimensão mais baixa, elevando comportamentos específicos.<br><br>
-
     Quando as quatro dimensões se alinham, o resultado deixa de ser emocional e passa a ser <b>estatístico, consistente e sustentável</b>.<br><br>
-
     <b>Consistência não é força. É forma.</b>
   `;
 
-  // ============================
-  // Storage
-  // ============================
   const STORAGE_KEY = 'esfera_v1';
 
   function loadState(){
@@ -450,9 +427,6 @@
     localStorage.removeItem(STORAGE_KEY);
   }
 
-  // ============================
-  // UI refs
-  // ============================
   const elLanding = document.getElementById('viewLanding');
   const elTest = document.getElementById('viewTest');
   const elResult = document.getElementById('viewResult');
@@ -492,17 +466,11 @@
     setTimeout(()=>toast.classList.remove('show'), 2200);
   }
 
-  // ============================
-  // State
-  // ============================
   let state = {
     meta: { name:'', email:'', market:'Day Trade', experience:'Iniciante', startedAt: null },
     answers: Array(QUESTIONS.length).fill(null),
   };
 
-  // ============================
-  // Render questions
-  // ============================
   function renderQuestions(){
     elQuestions.innerHTML = '';
 
@@ -585,9 +553,6 @@
     saveState(state);
   }
 
-  // ============================
-  // Navigation
-  // ============================
   function showLanding(){
     elLanding.style.display = '';
     elTest.style.display = 'none';
@@ -605,9 +570,6 @@
     elResult.style.display = '';
   }
 
-  // ============================
-  // Scoring
-  // ============================
   function sumRange(start, endExclusive){
     let s = 0;
     for(let i=start;i<endExclusive;i++) s += state.answers[i] || 0;
@@ -619,7 +581,6 @@
     const s2 = sumRange(16,32);
     const s3 = sumRange(32,48);
     const s4 = sumRange(48,64);
-
     return { CI: s1, GR: s2, AD: s3, AA: s4 };
   }
 
@@ -635,13 +596,9 @@
   function levelDefaultAD(){ return ["dependência crítica","instável","funcional","avançado"]; }
   function levelDefaultAA(){ return ["rigidez crítica","instável","funcional","avançado"]; }
 
-  // ============================
-  // Radar chart
-  // ============================
   let radarChart = null;
   function renderRadar(scores){
     const ctx = document.getElementById('radar');
-
     if(radarChart) radarChart.destroy();
 
     radarChart = new Chart(ctx, {
@@ -675,9 +632,6 @@
     });
   }
 
-  // ============================
-  // Result view
-  // ============================
   function presentResult(){
     const scores = computeScores();
 
@@ -704,14 +658,7 @@
     renderRadar(scores);
   }
 
-  // ============================
-  // Envio para Apps Script (mais confiável)
-  // - 1 request só
-  // - keepalive: melhora quando a página troca de view
-  // - sem "sendBeacon" pra evitar falso positivo
-  // ============================
   async function sendToWebApp(payload){
-    // Não dá pra ler resposta com no-cors, mas garante que o browser tenta enviar.
     await fetch(WEBAPP_URL, {
       method: "POST",
       mode: "no-cors",
@@ -721,9 +668,6 @@
     });
   }
 
-  // ============================
-  // Actions
-  // ============================
   btnStart.addEventListener('click', ()=>{
     if (!inputEmail.value.trim()) {
       showToast("Preencha seu e-mail para receber o resultado.");
@@ -787,7 +731,6 @@
     };
 
     try {
-      // dispara envio (não bloqueia render do resultado)
       sendToWebApp(payload).catch(()=>{});
       showToast("Resultado gerado. Se o e-mail não cair em 1–2 min, verifique Spam/Promoções.");
     } catch (e) {
@@ -825,9 +768,6 @@
     showToast('Reiniciado.');
   });
 
-  // ============================
-  // Boot
-  // ============================
   (function init(){
     const prev = loadState();
     if(prev){
