@@ -11,14 +11,14 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" integrity="sha256-0OGnR7nqX5zUoC5VAbuM6dp3z8Cfb6l2eE3n0O4Cj3s=" crossorigin="anonymous"></script>
   <style>
     :root{
-      --bg:#0b0d12;
+      --bg:#0a0d14;
       --card:#111522;
       --card2:#0f1320;
       --text:#e9ecf1;
       --muted:#aab3c2;
       --line:#22304a;
-      --accent:#7c5cff;
-      --accent2:#19c37d;
+      --accent:#5b6cff;
+      --accent2:#3ccf91;
       --warn:#ffb020;
       --danger:#ff4d4f;
       --radius:18px;
@@ -32,6 +32,13 @@
     .brand{display:flex;align-items:center;gap:10px}
     .logo{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#3dd6ff);display:grid;place-items:center;font-weight:800;box-shadow:0 12px 40px rgba(124,92,255,.25)}
     .brand h1{font-size:16px;margin:0}
+.logo-img{
+  height:42px;
+  width:auto;
+  display:block;
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,.45));
+}
+
     .pill{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:7px 10px;border-radius:999px;background:rgba(17,21,34,.55)}
 
     .grid{display:grid;grid-template-columns: 1.1fr .9fr;gap:18px}
@@ -99,7 +106,7 @@
   <div class="wrap">
     <div class="topbar">
       <div class="brand">
-        <div class="logo">E</div>
+        <img src="assets/logo-esfera.png" alt="Método ESFERA" class="logo-img">
         <div>
           <h1>ESFERA™ — Diagnóstico ESFERA™</h1>
           <div class="pill">Ferramenta digital • Landing + Teste + Resultado</div>
