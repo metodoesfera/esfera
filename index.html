@@ -36,17 +36,34 @@
 
       /* ✅ Gradientes mais suaves + base mais clara */
       background:
-        radial-gradient(1200px 700px at 18% 12%, rgba(124,92,255,.18), transparent 64%),
-        radial-gradient(1000px 650px at 82% 18%, rgba(25,195,125,.10), transparent 66%),
-        radial-gradient(900px 700px at 50% 95%, rgba(255,255,255,.06), transparent 62%),
-        var(--bg);
+        radial-gradient(1200px 700px at 18% 12%, rgba(124,92,255,.28), transparent 60%),
+radial-gradient(1000px 650px at 82% 18%, rgba(25,195,125,.18), transparent 62%),
+radial-gradient(900px 700px at 50% 95%, rgba(255,255,255,.10), transparent 58%),
+linear-gradient(180deg, #0f1a33 0%, #0b1326 100%);
+
 
       color:var(--text)
     }
 
     a{color:inherit}
     .wrap{max-width:1080px;margin:0 auto;padding:32px 18px 80px}
-    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+    .topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:18px;
+
+  padding: 6px 10px;
+  border-radius: 18px;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,.06),
+    rgba(255,255,255,.02)
+  );
+  backdrop-filter: blur(6px);
+}
+
     .brand{display:flex;align-items:center;gap:12px}
 
     .logo{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#3dd6ff);display:grid;place-items:center;font-weight:800;box-shadow:0 12px 40px rgba(124,92,255,.25)}
@@ -138,10 +155,10 @@
     .toast.show{opacity:1}
 /* força tamanho e destaque do logo no topo */
 .brand .logo-img{
-  height: 104px !important;   /* pode testar 88px, 104px ou 120px */
+  height: 120px !important;  /* logo mais presente */
   width: auto !important;
   display: block;
-  filter: brightness(0) invert(1) drop-shadow(0 10px 22px rgba(0,0,0,.50));
+  filter: brightness(0) invert(1) drop-shadow(0 12px 26px rgba(0,0,0,.55));
   opacity: 1;
 }
 
