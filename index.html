@@ -718,32 +718,41 @@
   // Result view
   // ============================
   function presentResult(){
-    const { metrics, values } = computeMetrics();
-    const macro = computeMacroFromValues(values);
-    const scores = macro; // ✅ agora existe (corrige seu bug)
+  const { metrics, values } = computeMetrics();
 
-    elS1.textContent = String(macro.CI);
-    elS2.textContent = String(macro.GR);
-    elS3.textContent = String(macro.AD);
-    elS4.textContent = String(macro.AA);
+  const macro = {
+    CI: Math.round((values.CI1 + values.CI2 + values.CI3)/3),
+    GR: Math.round((values.GR1 + values.GR2 + values.GR3)/3),
+    AD: Math.round((values.AD1 + values.AD2 + values.AD3)/3),
+    AA: Math.round((values.AA1 + values.AA2 + values.AA3)/3),
+  };
 
-    const meta = state.meta;
-    elWho.textContent = meta.name ? meta.name : '';
-    elMeta.textContent = `${meta.market} • ${meta.experience}`;
+  // KPIs (4 grandes)
+  elS1.textContent = String(macro.CI);
+  elS2.textContent = String(macro.GR);
+  elS3.textContent = String(macro.AD);
+  elS4.textContent = String(macro.AA);
 
-    elDevolutiva.innerHTML = DEVOLUTIVA_HTML + `
-      <div class="divider"></div>
-      <div class="badge">Níveis interpretativos (0–80)</div>
-      <div class="small muted" style="margin-top:8px;line-height:1.7">
-        <b>Controle Inibitório</b>: ${levelFromScore(scores.CI, levelDefaultCI())}<br>
-        <b>Gestão do Risco</b>: ${levelFromScore(scores.GR, levelDefaultGR())}<br>
-        <b>Autonomia Decisional</b>: ${levelFromScore(scores.AD, levelDefaultAD())}<br>
-        <b>Aprendizado Adaptativo</b>: ${levelFromScore(scores.AA, levelDefaultAA())}
-      </div>
-    `;
+  // Meta
+  const meta = state.meta;
+  elWho.textContent = meta.name ? meta.name : '';
+  elMeta.textContent = `${meta.market} • ${meta.experience}`;
 
-    renderRadarFromMetrics(metrics, values);
-  }
+  // Devolutiva + níveis (AGORA usando macro, não scores)
+  elDevolutiva.innerHTML = DEVOLUTIVA_HTML + `
+    <div class="divider"></div>
+    <div class="badge">Níveis interpretativos (0–80)</div>
+    <div class="small muted" style="margin-top:8px;line-height:1.7">
+      <b>Controle Inibitório</b>: ${levelFromScore(macro.CI, levelDefaultCI())}<br>
+      <b>Gestão do Risco</b>: ${levelFromScore(macro.GR, levelDefaultGR())}<br>
+      <b>Autonomia Decisional</b>: ${levelFromScore(macro.AD, levelDefaultAD())}<br>
+      <b>Aprendizado Adaptativo</b>: ${levelFromScore(macro.AA, levelDefaultAA())}
+    </div>
+  `;
+
+  // Radar com 12 eixos
+  renderRadarFromMetrics(metrics, values);
+}
 
   // ============================
   // Envio para Apps Script
@@ -803,11 +812,17 @@
   });
 
   btnSubmit.addEventListener('click', async ()=>{
+  try{
     autosave();
 
     const { metrics, values } = computeMetrics();
-    const macro = computeMacroFromValues(values);
-    const scores = macro; // ✅ agora existe (corrige seu bug)
+
+    const macro = {
+      CI: Math.round((values.CI1 + values.CI2 + values.CI3)/3),
+      GR: Math.round((values.GR1 + values.GR2 + values.GR3)/3),
+      AD: Math.round((values.AD1 + values.AD2 + values.AD3)/3),
+      AA: Math.round((values.AA1 + values.AA2 + values.AA3)/3),
+    };
 
     const payload = {
       meta: {
@@ -816,57 +831,38 @@
         market: state.meta.market || "",
         experience: state.meta.experience || ""
       },
-      // 12 eixos (0–80)
-      axes: values,
-      axesMeta: metrics.map(m => ({ key: m.key, label: m.label })),
-      // 4 dimensões (média)
-      scores: macro,
+
+      // 12 métricas (0–80)
+      scores: values,
+      metrics: metrics.map(m => ({ key: m.key, label: m.label })),
+
+      // 4 grandes (0–80)
+      macro,
+
       levels: {
-        CI: levelFromScore(scores.CI, levelDefaultCI()),
-        GR: levelFromScore(scores.GR, levelDefaultGR()),
-        AD: levelFromScore(scores.AD, levelDefaultAD()),
-        AA: levelFromScore(scores.AA, levelDefaultAA())
+        CI: levelFromScore(macro.CI, levelDefaultCI()),
+        GR: levelFromScore(macro.GR, levelDefaultGR()),
+        AD: levelFromScore(macro.AD, levelDefaultAD()),
+        AA: levelFromScore(macro.AA, levelDefaultAA())
       },
+
       createdAt: new Date().toISOString()
     };
 
-    // mostra resultado na tela SEM depender do envio
+    // Tenta enviar (mas não bloqueia seu resultado)
+    sendToWebApp(payload).catch(()=>{});
+
+    // Mostra feedback na tela (isso agora vai aparecer!)
+    showToast("Resultado gerado. Se o e-mail não cair, verifique Spam/Promoções.");
+
+    // Mostra resultado
     presentResult();
     showResult();
-
-    // tenta enviar
-    try {
-      await sendToWebApp(payload);
-      showToast("Enviado. Se o e-mail não cair em 1–2 min, verifique Spam/Promoções.");
-    } catch (e) {
-      showToast("Resultado gerado, mas falhou o envio (verifique conexão).");
-    }
-  });
-
-  btnPrint.addEventListener('click', ()=> window.print());
-
-  btnRestart.addEventListener('click', ()=>{
-    state.answers = Array(QUESTIONS.length).fill(null);
-    autosave();
-    showTest();
-    showToast('Teste reiniciado.');
-  });
-
-  btnClear.addEventListener('click', ()=>{
-    clearState();
-    state = { meta: { name:'', email:'', market:'Day Trade', experience:'Iniciante', startedAt:null }, answers: Array(QUESTIONS.length).fill(null) };
-    inputName.value=''; inputEmail.value=''; inputMarket.value='Day Trade'; inputExperience.value='Iniciante';
-    showLanding();
-    showToast('Dados apagados.');
-  });
-
-  btnReset.addEventListener('click', ()=>{
-    clearState();
-    state = { meta: { name:'', email:'', market:'Day Trade', experience:'Iniciante', startedAt:null }, answers: Array(QUESTIONS.length).fill(null) };
-    inputName.value=''; inputEmail.value='';
-    showLanding();
-    showToast('Reiniciado.');
-  });
+  } catch(e){
+    console.error(e);
+    showToast("Erro ao gerar resultado. Abra o Console (F12) e me envie o erro em vermelho.");
+  }
+});
 
   // ============================
   // Boot
