@@ -69,14 +69,6 @@ var(--bg);
     .logo{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#3dd6ff);display:grid;place-items:center;font-weight:800;box-shadow:0 12px 40px rgba(124,92,255,.25)}
     .brand h1{font-size:16px;margin:0}
 
-    /* ✅ Logo maior + branco (sem editar a imagem) */
-    .logo-img{
-  height: 140px !important;
-  width: auto !important;
-  display: block;
-  filter: brightness(0) invert(1) drop-shadow(0 12px 32px rgba(0,0,0,.55));
-}
-
 
     /* (mantive este bloco, mas ele não é o principal agora) */
     .brand img{
@@ -149,13 +141,13 @@ var(--bg);
     .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;background:rgba(17,21,34,.95);border:1px solid rgba(34,48,74,.9);color:var(--text);padding:10px 12px;border-radius:14px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.18s opacity}
     .toast.show{opacity:1}
 /* força tamanho e destaque do logo no topo */
-.brand .logo-img{
-  height: 120px !important;  /* logo mais presente */
+.logo-img{
+  height: 140px !important;
   width: auto !important;
   display: block;
-  filter: brightness(0) invert(1) drop-shadow(0 12px 26px rgba(0,0,0,.55));
-  opacity: 1;
+  filter: brightness(0) invert(1) drop-shadow(0 12px 32px rgba(0,0,0,.55));
 }
+
 
   </style>
 </head>
