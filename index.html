@@ -8,15 +8,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js (sem integrity para não bloquear) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
-
-
 
   <style>
     :root{
-      /* ✅ Fundo mais claro (área "1") */
       --bg:#18243a;
-
       --card:#111522;
       --card2:#0f1320;
       --text:#e9ecf1;
@@ -35,14 +33,11 @@
     body{
       margin:0;
       font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
-
-      /* ✅ Gradientes mais suaves + base mais clara */
       background:
         radial-gradient(1200px 700px at 18% 12%, rgba(124,92,255,.12), transparent 70%),
         radial-gradient(1000px 650px at 82% 18%, rgba(25,195,125,.08), transparent 72%),
         radial-gradient(900px 700px at 50% 95%, rgba(255,255,255,.04), transparent 70%),
         var(--bg);
-
       color:var(--text)
     }
 
@@ -55,22 +50,14 @@
       justify-content:space-between;
       gap:12px;
       margin-bottom:18px;
-
       padding: 6px 10px;
       border-radius: 18px;
-      background: linear-gradient(
-        180deg,
-        rgba(255,255,255,.06),
-        rgba(255,255,255,.02)
-      );
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
       backdrop-filter: blur(6px);
     }
 
     .brand{display:flex;align-items:center;gap:12px}
-
-    .logo{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#3dd6ff);display:grid;place-items:center;font-weight:800;box-shadow:0 12px 40px rgba(124,92,255,.25)}
     .brand h1{font-size:16px;margin:0}
-
     .brand img{
       height: 22px;
       width: auto;
@@ -88,10 +75,9 @@
     .card .inner{padding:18px}
     .hero{padding:22px 22px 18px}
 
-    /* ✅ Ajuste de tipografia (sem chave sobrando) */
     .hero h2{
       margin:0 0 10px;
-      font-size:24px;        /* antes 28px */
+      font-size:24px;
       letter-spacing:-.01em;
       line-height:1.25;
     }
@@ -141,7 +127,6 @@
     .progress{height:10px;border-radius:999px;background:rgba(34,48,74,.5);overflow:hidden}
     .progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#3dd6ff)}
 
-    .resultGrid{display:grid;grid-template-columns:1fr;gap:12px}
     .badge{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(34,48,74,.9);background:rgba(15,19,32,.65);padding:8px 10px;border-radius:999px;font-size:12px;color:var(--muted)}
     .kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     @media (max-width:520px){.kpi{grid-template-columns:1fr}}
@@ -167,11 +152,10 @@
       opacity:0;
       pointer-events:none;
       transition:.18s opacity;
-      z-index:9999;
+      z-index:999999;
     }
     .toast.show{opacity:1}
 
-    /* força tamanho e destaque do logo no topo */
     .logo-img{
       height: 140px !important;
       width: auto !important;
@@ -471,7 +455,6 @@
   const elQuestions = document.getElementById('questions');
   const elProgressText = document.getElementById('progressText');
   const elProgressBar = document.getElementById('progressBar');
-  const btnSubmit = document.getElementById('btnSubmit');
 
   const btnStart = document.getElementById('btnStart');
   const btnLoad = document.getElementById('btnLoad');
@@ -479,6 +462,7 @@
   const btnBack = document.getElementById('btnBack');
   const btnReset = document.getElementById('btnReset');
 
+  const btnSubmit = document.getElementById('btnSubmit');
   const btnPrint = document.getElementById('btnPrint');
   const btnRestart = document.getElementById('btnRestart');
   const btnClear = document.getElementById('btnClear');
@@ -512,9 +496,42 @@
     answers: Array(QUESTIONS.length).fill(null),
   };
 
+  function autosave(){ saveState(state); }
+
   // ============================
-  // Render questions
+  // Navigation
   // ============================
+  function showLanding(){
+    elLanding.style.display = '';
+    elTest.style.display = 'none';
+    elResult.style.display = 'none';
+  }
+  function showTest(){
+    elLanding.style.display = 'none';
+    elTest.style.display = '';
+    elResult.style.display = 'none';
+    renderQuestions();
+  }
+  function showResult(){
+    elLanding.style.display = 'none';
+    elTest.style.display = 'none';
+    elResult.style.display = '';
+  }
+
+  // ============================
+  // Questions
+  // ============================
+  function answeredCount(){
+    return state.answers.filter(v=>typeof v === 'number').length;
+  }
+  function updateProgress(){
+    const done = answeredCount();
+    const total = QUESTIONS.length;
+    elProgressText.textContent = `${done}/${total}`;
+    elProgressBar.style.width = `${Math.round((done/total)*100)}%`;
+    btnSubmit.disabled = done !== total;
+  }
+
   function renderQuestions(){
     elQuestions.innerHTML = '';
 
@@ -581,42 +598,8 @@
     updateProgress();
   }
 
-  function answeredCount(){
-    return state.answers.filter(v=>typeof v === 'number').length;
-  }
-
-  function updateProgress(){
-    const done = answeredCount();
-    const total = QUESTIONS.length;
-    elProgressText.textContent = `${done}/${total}`;
-    elProgressBar.style.width = `${Math.round((done/total)*100)}%`;
-    btnSubmit.disabled = done !== total;
-  }
-
-  function autosave(){ saveState(state); }
-
   // ============================
-  // Navigation
-  // ============================
-  function showLanding(){
-    elLanding.style.display = '';
-    elTest.style.display = 'none';
-    elResult.style.display = 'none';
-  }
-  function showTest(){
-    elLanding.style.display = 'none';
-    elTest.style.display = '';
-    elResult.style.display = 'none';
-    renderQuestions();
-  }
-  function showResult(){
-    elLanding.style.display = 'none';
-    elTest.style.display = 'none';
-    elResult.style.display = '';
-  }
-
-  // ============================
-  // 12 métricas (0–80)
+  // 12 métricas (0–80) + Macro
   // ============================
   function computeMetrics(){
     const sumQs = (arr) => arr.reduce((acc, q)=> acc + (state.answers[q-1] || 0), 0);
@@ -647,7 +630,6 @@
       const norm01 = (raw - min) / (max - min);
       values[m.key] = Math.round(norm01 * 80);
     }
-
     return { metrics, values };
   }
 
@@ -660,9 +642,6 @@
     };
   }
 
-  // ============================
-  // Levels (macro)
-  // ============================
   function levelFromScore(score, mode){
     if(score <= 29) return mode[0];
     if(score <= 49) return mode[1];
@@ -675,55 +654,58 @@
   function levelDefaultAA(){ return ["rigidez crítica","instável","funcional","avançado"]; }
 
   // ============================
-  // Radar chart (12 eixos)
+  // Radar chart
   // ============================
   let radarChart = null;
+
   function renderRadarFromMetrics(metrics, values){
-  const canvas = document.getElementById('radar');
-  if (!canvas) {
-    showToast("Erro: não encontrei o gráfico (canvas #radar).");
-    return;
-  }
+    const canvas = document.getElementById('radar');
+    if (!canvas) return;
 
-  // ✅ só destrói se existir e tiver destroy()
-  if (radarChart && typeof radarChart.destroy === "function") {
-    radarChart.destroy();
-  }
+    // Se Chart.js não carregou, não quebra o site
+    if (typeof Chart === "undefined") {
+      showToast("Aviso: Chart.js não carregou. Resultado exibido sem gráfico.");
+      return;
+    }
 
-  const labels = metrics.map(m => m.label);
-  const data = metrics.map(m => values[m.key]);
+    if (radarChart && typeof radarChart.destroy === "function") {
+      radarChart.destroy();
+    }
 
-  radarChart = new Chart(canvas, {
-    type: 'radar',
-    data: {
-      labels,
-      datasets: [{
-        label: 'ESFERA™ (0–80)',
-        data,
-        borderWidth: 2,
-        pointRadius: 3,
-        fill: true,
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { labels: { color: '#e9ecf1' } } },
-      scales: {
-        r: {
-          min: 0,
-          max: 80,
-          ticks: { stepSize: 10, color: '#aab3c2', backdropColor: 'transparent' },
-          angleLines: { color: 'rgba(34,48,74,.9)' },
-          grid: { color: 'rgba(34,48,74,.7)' },
-          pointLabels: { color: '#e9ecf1', font: { size: 11, weight: 600 } },
+    const labels = metrics.map(m => m.label);
+    const data = metrics.map(m => values[m.key]);
+
+    radarChart = new Chart(canvas, {
+      type: 'radar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'ESFERA™ (0–80)',
+          data,
+          borderWidth: 2,
+          pointRadius: 3,
+          fill: true,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: '#e9ecf1' } } },
+        scales: {
+          r: {
+            min: 0,
+            max: 80,
+            ticks: { stepSize: 10, color: '#aab3c2', backdropColor: 'transparent' },
+            angleLines: { color: 'rgba(34,48,74,.9)' },
+            grid: { color: 'rgba(34,48,74,.7)' },
+            pointLabels: { color: '#e9ecf1', font: { size: 11, weight: 600 } },
+          }
         }
       }
-    }
-  });
-}
+    });
+  }
 
   // ============================
-  // Result view
+  // Present Result
   // ============================
   function presentResult(){
     const { metrics, values } = computeMetrics();
@@ -750,15 +732,13 @@
     `;
 
     renderRadarFromMetrics(metrics, values);
-
     return { metrics, values, macro };
   }
 
   // ============================
-  // Envio para Apps Script
+  // Send to WebApp
   // ============================
   async function sendToWebApp(payload){
-    // no-cors => não dá pra ler resposta; se "resolve", o browser tentou enviar.
     await fetch(WEBAPP_URL, {
       method: "POST",
       mode: "no-cors",
@@ -811,65 +791,42 @@
     showLanding();
   });
 
-  // ✅ BOTÃO "VER RESULTADO" corrigido (toast sempre aparece)
   btnSubmit.addEventListener('click', async ()=>{
-  autosave();
+    autosave();
 
-  try {
-    // 1) Gera e apresenta resultado na tela
-    const { metrics, values, macro } = presentResult();
-    showResult();
+    try {
+      const { metrics, values, macro } = presentResult();
+      showResult();
 
-    // 2) Monta payload (SEM colocar "const" dentro!)
-    const payload = {
-      meta: {
-        name: state.meta.name || "",
-        email: state.meta.email || "",
-        market: state.meta.market || "",
-        experience: state.meta.experience || ""
-      },
-      macro,                 // ✅ 4 dimensões (0–80)
-      scores: values,        // ✅ 12 métricas (0–80)
-      metrics: metrics.map(m => ({ key: m.key, label: m.label })),
-      levels: {
-        CI: levelFromScore(macro.CI, levelDefaultCI()),
-        GR: levelFromScore(macro.GR, levelDefaultGR()),
-        AD: levelFromScore(macro.AD, levelDefaultAD()),
-        AA: levelFromScore(macro.AA, levelDefaultAA())
-      },
-      createdAt: new Date().toISOString()
-    };
-
-    // 3) Envia (não bloqueia a tela)
-    sendToWebApp(payload).catch(()=>{});
-
-    // 4) Toast de sucesso
-    showToast("Resultado gerado. Se o e-mail não cair em 1–2 min, verifique Spam/Promoções.");
-
-  } catch (e) {
-    console.error(e);
-    showToast("Erro ao gerar resultado. Abra o Console (F12) e veja o erro em vermelho.");
-  }
-});
+      const payload = {
+        meta: {
+          name: state.meta.name || "",
+          email: state.meta.email || "",
+          market: state.meta.market || "",
+          experience: state.meta.experience || ""
+        },
+        macro,
+        scores: values,
+        metrics: metrics.map(m => ({ key: m.key, label: m.label })),
+        levels: {
+          CI: levelFromScore(macro.CI, levelDefaultCI()),
+          GR: levelFromScore(macro.GR, levelDefaultGR()),
+          AD: levelFromScore(macro.AD, levelDefaultAD()),
+          AA: levelFromScore(macro.AA, levelDefaultAA())
+        },
         createdAt: new Date().toISOString()
       };
 
-      // 3) tenta enviar (sem travar a interface)
-      sendToWebApp(payload)
-        .then(()=> showToast("Resultado gerado. (envio disparado) Verifique Spam/Promoções."))
-        .catch(()=> showToast("Resultado gerado, mas falhou o envio por e-mail."));
+      sendToWebApp(payload).catch(()=>{});
+      showToast("Resultado gerado. Se o e-mail não cair em 1–2 min, verifique Spam/Promoções.");
 
     } catch (e) {
       console.error(e);
       showToast("Erro ao gerar resultado. Abra o Console (F12) e veja o erro em vermelho.");
-      // opcional: também pode dar alert se preferir
-      // alert("Erro ao gerar resultado. Abra o Console (F12) e me envie o erro em vermelho.");
     }
   });
 
-  btnPrint.addEventListener('click', ()=>{
-    window.print();
-  });
+  btnPrint.addEventListener('click', ()=> window.print());
 
   btnRestart.addEventListener('click', ()=>{
     state.answers = Array(QUESTIONS.length).fill(null);
