@@ -8,7 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+
 
 
   <style>
@@ -678,45 +679,48 @@
   // ============================
   let radarChart = null;
   function renderRadarFromMetrics(metrics, values){
-    const ctx = document.getElementById('radar');
-    if (typeof Chart === "undefined") {
-  showToast("Erro: biblioteca do gráfico não carregou (Chart.js). Recarregue com Ctrl+Shift+R.");
-  return;
-} radarChart.destroy();
+  const canvas = document.getElementById('radar');
+  if (!canvas) {
+    showToast("Erro: não encontrei o gráfico (canvas #radar).");
+    return;
+  }
 
-    const labels = metrics.map(m => m.label);
-    const data = metrics.map(m => values[m.key]);
+  // ✅ só destrói se existir e tiver destroy()
+  if (radarChart && typeof radarChart.destroy === "function") {
+    radarChart.destroy();
+  }
 
-    radarChart = new Chart(ctx, {
-      type: 'radar',
-      data: {
-        labels,
-        datasets: [{
-          label: 'ESFERA™ (0–80)',
-          data,
-          borderWidth: 2,
-          pointRadius: 3,
-          fill: true,
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { labels: { color: '#e9ecf1' } }
-        },
-        scales: {
-          r: {
-            min: 0,
-            max: 80,
-            ticks: { stepSize: 10, color: '#aab3c2', backdropColor: 'transparent' },
-            angleLines: { color: 'rgba(34,48,74,.9)' },
-            grid: { color: 'rgba(34,48,74,.7)' },
-            pointLabels: { color: '#e9ecf1', font: { size: 11, weight: 600 } },
-          }
+  const labels = metrics.map(m => m.label);
+  const data = metrics.map(m => values[m.key]);
+
+  radarChart = new Chart(canvas, {
+    type: 'radar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'ESFERA™ (0–80)',
+        data,
+        borderWidth: 2,
+        pointRadius: 3,
+        fill: true,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { color: '#e9ecf1' } } },
+      scales: {
+        r: {
+          min: 0,
+          max: 80,
+          ticks: { stepSize: 10, color: '#aab3c2', backdropColor: 'transparent' },
+          angleLines: { color: 'rgba(34,48,74,.9)' },
+          grid: { color: 'rgba(34,48,74,.7)' },
+          pointLabels: { color: '#e9ecf1', font: { size: 11, weight: 600 } },
         }
       }
-    });
-  }
+    }
+  });
+}
 
   // ============================
   // Result view
@@ -809,30 +813,44 @@
 
   // ✅ BOTÃO "VER RESULTADO" corrigido (toast sempre aparece)
   btnSubmit.addEventListener('click', async ()=>{
-    autosave();
+  autosave();
 
-    try {
-      // 1) monta e mostra o resultado (se der erro aqui, cai no catch e mostra toast)
-      const { metrics, values, macro } = presentResult();
-      showResult();
+  try {
+    // 1) Gera e apresenta resultado na tela
+    const { metrics, values, macro } = presentResult();
+    showResult();
 
-      // 2) monta payload
-      const payload = {
-        meta: {
-          name: state.meta.name || "",
-          email: state.meta.email || "",
-          market: state.meta.market || "",
-          experience: state.meta.experience || ""
-        },
-        macro, // ✅ 4 dimensões (0–80)
-        scores: values, // ✅ 12 métricas (0–80)
-        metrics: metrics.map(m => ({ key: m.key, label: m.label })),
-        levels: {
-          CI: levelFromScore(macro.CI, levelDefaultCI()),
-          GR: levelFromScore(macro.GR, levelDefaultGR()),
-          AD: levelFromScore(macro.AD, levelDefaultAD()),
-          AA: levelFromScore(macro.AA, levelDefaultAA())
-        },
+    // 2) Monta payload (SEM colocar "const" dentro!)
+    const payload = {
+      meta: {
+        name: state.meta.name || "",
+        email: state.meta.email || "",
+        market: state.meta.market || "",
+        experience: state.meta.experience || ""
+      },
+      macro,                 // ✅ 4 dimensões (0–80)
+      scores: values,        // ✅ 12 métricas (0–80)
+      metrics: metrics.map(m => ({ key: m.key, label: m.label })),
+      levels: {
+        CI: levelFromScore(macro.CI, levelDefaultCI()),
+        GR: levelFromScore(macro.GR, levelDefaultGR()),
+        AD: levelFromScore(macro.AD, levelDefaultAD()),
+        AA: levelFromScore(macro.AA, levelDefaultAA())
+      },
+      createdAt: new Date().toISOString()
+    };
+
+    // 3) Envia (não bloqueia a tela)
+    sendToWebApp(payload).catch(()=>{});
+
+    // 4) Toast de sucesso
+    showToast("Resultado gerado. Se o e-mail não cair em 1–2 min, verifique Spam/Promoções.");
+
+  } catch (e) {
+    console.error(e);
+    showToast("Erro ao gerar resultado. Abra o Console (F12) e veja o erro em vermelho.");
+  }
+});
         createdAt: new Date().toISOString()
       };
 
