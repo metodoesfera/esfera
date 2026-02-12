@@ -696,10 +696,18 @@ var(--bg);
   function presentResult(){
     const { metrics, values } = computeMetrics();
 
-    elS1.textContent = String(scores.CI);
-    elS2.textContent = String(scores.GR);
-    elS3.textContent = String(scores.AD);
-    elS4.textContent = String(scores.AA);
+const macro = {
+  CI: Math.round((values.CI1 + values.CI2 + values.CI3)/3),
+  GR: Math.round((values.GR1 + values.GR2 + values.GR3)/3),
+  AD: Math.round((values.AD1 + values.AD2 + values.AD3)/3),
+  AA: Math.round((values.AA1 + values.AA2 + values.AA3)/3),
+};
+
+elS1.textContent = String(macro.CI);
+elS2.textContent = String(macro.GR);
+elS3.textContent = String(macro.AD);
+elS4.textContent = String(macro.AA);
+
 
     const meta = state.meta;
     elWho.textContent = meta.name ? meta.name : '';
@@ -772,7 +780,7 @@ var(--bg);
   btnSubmit.addEventListener('click', async ()=>{
     autosave();
 
-    const scores = computeScores();
+    const { metrics, values } = computeMetrics();
 
     const payload = {
       meta: {
@@ -781,7 +789,8 @@ var(--bg);
         market: state.meta.market || "",
         experience: state.meta.experience || ""
       },
-      scores,
+      scores: values,
+metrics: metrics.map(m => ({ key: m.key, label: m.label })),
       levels: {
         CI: levelFromScore(scores.CI, levelDefaultCI()),
         GR: levelFromScore(scores.GR, levelDefaultGR()),
