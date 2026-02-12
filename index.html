@@ -8,7 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" integrity="sha256-0OGnR7nqX5zUoC5VAbuM6dp3z8Cfb6l2eE3n0O4Cj3s=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
 
   <style>
     :root{
@@ -678,7 +679,10 @@
   let radarChart = null;
   function renderRadarFromMetrics(metrics, values){
     const ctx = document.getElementById('radar');
-    if(radarChart) radarChart.destroy();
+    if (typeof Chart === "undefined") {
+  showToast("Erro: biblioteca do gráfico não carregou (Chart.js). Recarregue com Ctrl+Shift+R.");
+  return;
+} radarChart.destroy();
 
     const labels = metrics.map(m => m.label);
     const data = metrics.map(m => values[m.key]);
