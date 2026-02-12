@@ -8,12 +8,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
-    integrity="sha256-0OGnR7nqX5zUoC5VAbuM6dp3z8Cfb6l2eE3n0O4Cj3s=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" integrity="sha256-0OGnR7nqX5zUoC5VAbuM6dp3z8Cfb6l2eE3n0O4Cj3s=" crossorigin="anonymous"></script>
 
   <style>
     :root{
+      /* ✅ Fundo mais claro (área "1") */
       --bg:#18243a;
+
       --card:#111522;
       --card2:#0f1320;
       --text:#e9ecf1;
@@ -32,11 +33,14 @@
     body{
       margin:0;
       font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+
+      /* ✅ Gradientes mais suaves + base mais clara */
       background:
         radial-gradient(1200px 700px at 18% 12%, rgba(124,92,255,.12), transparent 70%),
         radial-gradient(1000px 650px at 82% 18%, rgba(25,195,125,.08), transparent 72%),
         radial-gradient(900px 700px at 50% 95%, rgba(255,255,255,.04), transparent 70%),
         var(--bg);
+
       color:var(--text)
     }
 
@@ -49,9 +53,14 @@
       justify-content:space-between;
       gap:12px;
       margin-bottom:18px;
+
       padding: 6px 10px;
       border-radius: 18px;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      background: linear-gradient(
+        180deg,
+        rgba(255,255,255,.06),
+        rgba(255,255,255,.02)
+      );
       backdrop-filter: blur(6px);
     }
 
@@ -73,18 +82,14 @@
     .grid{display:grid;grid-template-columns: 1.1fr .9fr;gap:18px}
     @media (max-width: 980px){.grid{grid-template-columns:1fr}}
 
-    .card{
-      background:linear-gradient(180deg, rgba(17,21,34,.85), rgba(17,21,34,.65));
-      border:1px solid rgba(34,48,74,.9);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow)
-    }
+    .card{background:linear-gradient(180deg, rgba(17,21,34,.85), rgba(17,21,34,.65));border:1px solid rgba(34,48,74,.9);border-radius:var(--radius);box-shadow:var(--shadow)}
     .card .inner{padding:18px}
     .hero{padding:22px 22px 18px}
 
+    /* ✅ Ajuste de tipografia (sem chave sobrando) */
     .hero h2{
       margin:0 0 10px;
-      font-size:24px;
+      font-size:24px;        /* antes 28px */
       letter-spacing:-.01em;
       line-height:1.25;
     }
@@ -134,6 +139,7 @@
     .progress{height:10px;border-radius:999px;background:rgba(34,48,74,.5);overflow:hidden}
     .progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#3dd6ff)}
 
+    .resultGrid{display:grid;grid-template-columns:1fr;gap:12px}
     .badge{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(34,48,74,.9);background:rgba(15,19,32,.65);padding:8px 10px;border-radius:999px;font-size:12px;color:var(--muted)}
     .kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     @media (max-width:520px){.kpi{grid-template-columns:1fr}}
@@ -146,7 +152,10 @@
     .divider{height:1px;background:rgba(34,48,74,.8);margin:14px 0}
 
     .toast{
-      position:fixed;left:50%;transform:translateX(-50%);bottom:18px;
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom:18px;
       background:rgba(17,21,34,.95);
       border:1px solid rgba(34,48,74,.9);
       color:var(--text);
@@ -155,7 +164,8 @@
       box-shadow:var(--shadow);
       opacity:0;
       pointer-events:none;
-      transition:.18s opacity
+      transition:.18s opacity;
+      z-index:9999;
     }
     .toast.show{opacity:1}
 
@@ -337,13 +347,6 @@
   // ============================
   const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwWbLUImALg8tERWfJfNCSPmgJPh4ZBZiNk7po2elW0nUU8mycJv2B6np2FFpeSAVvY/exec";
 
-  const DIMENSIONS = [
-    { key: 'CI', label: 'Controle Inibitório', max: 80, level: levelDefaultCI },
-    { key: 'GR', label: 'Gestão do Risco', max: 80, level: levelDefaultGR },
-    { key: 'AD', label: 'Autonomia Decisional', max: 80, level: levelDefaultAD },
-    { key: 'AA', label: 'Aprendizado Adaptativo', max: 80, level: levelDefaultAA },
-  ];
-
   const QUESTIONS = [
     "Quando identifico uma possível entrada, consigo esperar a confirmação completa do meu plano.",
     "Mesmo vendo o preço se mover rápido, evito entrar sem checklist mental claro.",
@@ -435,7 +438,7 @@
     Pontuação alta indica autoria plena.<br><br>
     <b>Aprendizado Adaptativo</b><br>
     Pontuação baixa indica repetição de erros.<br>
-    Pontuação alta indica evolução contínua por feedback.<br>
+    Pontuação alta indica evolução contínua.<br>
     <div class="divider"></div>
     <b>Encerramento da Devolutiva</b><br>
     Seu gráfico mostra <b>onde desenvolver</b>, não onde se julgar.<br><br>
@@ -444,9 +447,6 @@
     <b>Consistência não é força. É forma.</b>
   `;
 
-  // ============================
-  // Storage
-  // ============================
   const STORAGE_KEY = 'esfera_v1';
 
   function loadState(){
@@ -497,11 +497,10 @@
 
   const toast = document.getElementById('toast');
   function showToast(msg){
-  alert(msg); // <-- FORÇA aparecer
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(()=>toast.classList.remove('show'), 4000);
-}
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'), 2200);
+  }
 
   // ============================
   // State
@@ -592,9 +591,7 @@
     btnSubmit.disabled = done !== total;
   }
 
-  function autosave(){
-    saveState(state);
-  }
+  function autosave(){ saveState(state); }
 
   // ============================
   // Navigation
@@ -652,8 +649,7 @@
     return { metrics, values };
   }
 
-  // Macro (4 dimensões) a partir dos 12 eixos
-  function computeMacroFromValues(values){
+  function computeMacro(values){
     return {
       CI: Math.round((values.CI1 + values.CI2 + values.CI3)/3),
       GR: Math.round((values.GR1 + values.GR2 + values.GR3)/3),
@@ -662,13 +658,15 @@
     };
   }
 
+  // ============================
+  // Levels (macro)
+  // ============================
   function levelFromScore(score, mode){
     if(score <= 29) return mode[0];
     if(score <= 49) return mode[1];
     if(score <= 64) return mode[2];
     return mode[3];
   }
-
   function levelDefaultCI(){ return ["crítico","instável","funcional","avançado"]; }
   function levelDefaultGR(){ return ["disfuncional","instável","funcional","avançado"]; }
   function levelDefaultAD(){ return ["dependência crítica","instável","funcional","avançado"]; }
@@ -699,7 +697,9 @@
       },
       options: {
         responsive: true,
-        plugins: { legend: { labels: { color: '#e9ecf1' } } },
+        plugins: {
+          legend: { labels: { color: '#e9ecf1' } }
+        },
         scales: {
           r: {
             min: 0,
@@ -718,48 +718,40 @@
   // Result view
   // ============================
   function presentResult(){
-  const { metrics, values } = computeMetrics();
+    const { metrics, values } = computeMetrics();
+    const macro = computeMacro(values);
 
-  const macro = {
-    CI: Math.round((values.CI1 + values.CI2 + values.CI3)/3),
-    GR: Math.round((values.GR1 + values.GR2 + values.GR3)/3),
-    AD: Math.round((values.AD1 + values.AD2 + values.AD3)/3),
-    AA: Math.round((values.AA1 + values.AA2 + values.AA3)/3),
-  };
+    elS1.textContent = String(macro.CI);
+    elS2.textContent = String(macro.GR);
+    elS3.textContent = String(macro.AD);
+    elS4.textContent = String(macro.AA);
 
-  // KPIs (4 grandes)
-  elS1.textContent = String(macro.CI);
-  elS2.textContent = String(macro.GR);
-  elS3.textContent = String(macro.AD);
-  elS4.textContent = String(macro.AA);
+    const meta = state.meta;
+    elWho.textContent = meta.name ? meta.name : '';
+    elMeta.textContent = `${meta.market} • ${meta.experience}`;
 
-  // Meta
-  const meta = state.meta;
-  elWho.textContent = meta.name ? meta.name : '';
-  elMeta.textContent = `${meta.market} • ${meta.experience}`;
+    elDevolutiva.innerHTML = DEVOLUTIVA_HTML + `
+      <div class="divider"></div>
+      <div class="badge">Níveis interpretativos (0–80)</div>
+      <div class="small muted" style="margin-top:8px;line-height:1.7">
+        <b>Controle Inibitório</b>: ${levelFromScore(macro.CI, levelDefaultCI())}<br>
+        <b>Gestão do Risco</b>: ${levelFromScore(macro.GR, levelDefaultGR())}<br>
+        <b>Autonomia Decisional</b>: ${levelFromScore(macro.AD, levelDefaultAD())}<br>
+        <b>Aprendizado Adaptativo</b>: ${levelFromScore(macro.AA, levelDefaultAA())}
+      </div>
+    `;
 
-  // Devolutiva + níveis (AGORA usando macro, não scores)
-  elDevolutiva.innerHTML = DEVOLUTIVA_HTML + `
-    <div class="divider"></div>
-    <div class="badge">Níveis interpretativos (0–80)</div>
-    <div class="small muted" style="margin-top:8px;line-height:1.7">
-      <b>Controle Inibitório</b>: ${levelFromScore(macro.CI, levelDefaultCI())}<br>
-      <b>Gestão do Risco</b>: ${levelFromScore(macro.GR, levelDefaultGR())}<br>
-      <b>Autonomia Decisional</b>: ${levelFromScore(macro.AD, levelDefaultAD())}<br>
-      <b>Aprendizado Adaptativo</b>: ${levelFromScore(macro.AA, levelDefaultAA())}
-    </div>
-  `;
+    renderRadarFromMetrics(metrics, values);
 
-  // Radar com 12 eixos
-  renderRadarFromMetrics(metrics, values);
-}
+    return { metrics, values, macro };
+  }
 
   // ============================
   // Envio para Apps Script
   // ============================
   async function sendToWebApp(payload){
-    // no-cors: não dá pra ler resposta, mas dá pra detectar falha de rede (reject)
-    return fetch(WEBAPP_URL, {
+    // no-cors => não dá pra ler resposta; se "resolve", o browser tentou enviar.
+    await fetch(WEBAPP_URL, {
       method: "POST",
       mode: "no-cors",
       keepalive: true,
@@ -811,58 +803,74 @@
     showLanding();
   });
 
+  // ✅ BOTÃO "VER RESULTADO" corrigido (toast sempre aparece)
   btnSubmit.addEventListener('click', async ()=>{
-  try{
     autosave();
 
-    const { metrics, values } = computeMetrics();
+    try {
+      // 1) monta e mostra o resultado (se der erro aqui, cai no catch e mostra toast)
+      const { metrics, values, macro } = presentResult();
+      showResult();
 
-    const macro = {
-      CI: Math.round((values.CI1 + values.CI2 + values.CI3)/3),
-      GR: Math.round((values.GR1 + values.GR2 + values.GR3)/3),
-      AD: Math.round((values.AD1 + values.AD2 + values.AD3)/3),
-      AA: Math.round((values.AA1 + values.AA2 + values.AA3)/3),
-    };
+      // 2) monta payload
+      const payload = {
+        meta: {
+          name: state.meta.name || "",
+          email: state.meta.email || "",
+          market: state.meta.market || "",
+          experience: state.meta.experience || ""
+        },
+        macro, // ✅ 4 dimensões (0–80)
+        scores: values, // ✅ 12 métricas (0–80)
+        metrics: metrics.map(m => ({ key: m.key, label: m.label })),
+        levels: {
+          CI: levelFromScore(macro.CI, levelDefaultCI()),
+          GR: levelFromScore(macro.GR, levelDefaultGR()),
+          AD: levelFromScore(macro.AD, levelDefaultAD()),
+          AA: levelFromScore(macro.AA, levelDefaultAA())
+        },
+        createdAt: new Date().toISOString()
+      };
 
-    const payload = {
-      meta: {
-        name: state.meta.name || "",
-        email: state.meta.email || "",
-        market: state.meta.market || "",
-        experience: state.meta.experience || ""
-      },
+      // 3) tenta enviar (sem travar a interface)
+      sendToWebApp(payload)
+        .then(()=> showToast("Resultado gerado. (envio disparado) Verifique Spam/Promoções."))
+        .catch(()=> showToast("Resultado gerado, mas falhou o envio por e-mail."));
 
-      // 12 métricas (0–80)
-      scores: values,
-      metrics: metrics.map(m => ({ key: m.key, label: m.label })),
+    } catch (e) {
+      console.error(e);
+      showToast("Erro ao gerar resultado. Abra o Console (F12) e veja o erro em vermelho.");
+      // opcional: também pode dar alert se preferir
+      // alert("Erro ao gerar resultado. Abra o Console (F12) e me envie o erro em vermelho.");
+    }
+  });
 
-      // 4 grandes (0–80)
-      macro,
+  btnPrint.addEventListener('click', ()=>{
+    window.print();
+  });
 
-      levels: {
-        CI: levelFromScore(macro.CI, levelDefaultCI()),
-        GR: levelFromScore(macro.GR, levelDefaultGR()),
-        AD: levelFromScore(macro.AD, levelDefaultAD()),
-        AA: levelFromScore(macro.AA, levelDefaultAA())
-      },
+  btnRestart.addEventListener('click', ()=>{
+    state.answers = Array(QUESTIONS.length).fill(null);
+    autosave();
+    showTest();
+    showToast('Teste reiniciado.');
+  });
 
-      createdAt: new Date().toISOString()
-    };
+  btnClear.addEventListener('click', ()=>{
+    clearState();
+    state = { meta: { name:'', email:'', market:'Day Trade', experience:'Iniciante', startedAt:null }, answers: Array(QUESTIONS.length).fill(null) };
+    inputName.value=''; inputEmail.value=''; inputMarket.value='Day Trade'; inputExperience.value='Iniciante';
+    showLanding();
+    showToast('Dados apagados.');
+  });
 
-    // Tenta enviar (mas não bloqueia seu resultado)
-    sendToWebApp(payload).catch(()=>{});
-
-    // Mostra feedback na tela (isso agora vai aparecer!)
-    showToast("Resultado gerado. Se o e-mail não cair, verifique Spam/Promoções.");
-
-    // Mostra resultado
-    presentResult();
-    showResult();
-  } catch(e){
-    console.error(e);
-    showToast("Erro ao gerar resultado. Abra o Console (F12) e me envie o erro em vermelho.");
-  }
-});
+  btnReset.addEventListener('click', ()=>{
+    clearState();
+    state = { meta: { name:'', email:'', market:'Day Trade', experience:'Iniciante', startedAt:null }, answers: Array(QUESTIONS.length).fill(null) };
+    inputName.value=''; inputEmail.value='';
+    showLanding();
+    showToast('Reiniciado.');
+  });
 
   // ============================
   // Boot
