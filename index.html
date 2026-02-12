@@ -497,10 +497,11 @@
 
   const toast = document.getElementById('toast');
   function showToast(msg){
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(()=>toast.classList.remove('show'), 2200);
-  }
+  alert(msg); // <-- FORÇA aparecer
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'), 4000);
+}
 
   // ============================
   // State
