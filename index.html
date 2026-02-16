@@ -166,32 +166,77 @@
 /* ============================
    Mobile-first adjustments
 ============================ */
-@media (max-width: 640px) {
+/* ===== MOBILE LAPIDAÇÃO ===== */
+@media (max-width: 768px) {
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .brand {
+    gap: 8px;
+  }
+
+  .brand h1 {
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .pill {
+    display: none; /* some com o texto longo no mobile */
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
   .hero h2 {
     font-size: 20px;
-    line-height: 1.25;
+    line-height: 1.3;
   }
 
   .hero p {
     font-size: 13px;
-    line-height: 1.55;
-  }
-
-  .actions {
-    flex-direction: column;
-  }
-
-  .btn.primary {
-    padding: 16px 18px;
-    font-size: 15px;
+    max-width: 100%;
   }
 
   .hero .bullets {
     grid-template-columns: 1fr;
   }
 
-  .b {
-    padding: 10px;
+  .actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .sectionTitle h3 {
+    font-size: 13px;
+  }
+
+  .qText {
+    font-size: 14px;
+  }
+
+  .scale {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+
+  .opt {
+    padding: 10px 0;
+    font-size: 13px;
+  }
+
+  canvas#radar {
+    max-width: 100%;
+    height: auto !important;
   }
 }
 
