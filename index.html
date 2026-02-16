@@ -1,4 +1,4 @@
-<!doctype html>
+<!doc<!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
@@ -163,144 +163,112 @@
       filter: brightness(0) invert(1) drop-shadow(0 12px 32px rgba(0,0,0,.55));
     }
 
-/* ============================
-   MOBILE POLISH (não afeta desktop)
-   ============================ */
-@media (max-width: 720px){
-  .wrap{
-    padding: 18px 14px calc(32px + env(safe-area-inset-bottom)) !important;
-  }
+    /* ============================
+       MOBILE POLISH (não afeta desktop)
+       ============================ */
+    @media (max-width: 720px){
+      .wrap{
+        padding: 18px 14px calc(32px + env(safe-area-inset-bottom)) !important;
+      }
 
-  /* Topo: empilha e centraliza */
-  .topbar{
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    padding: 12px;
-  }
+      .topbar{
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 12px;
+      }
 
-  .brand{
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 10px;
-  }
+      .brand{
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+      }
 
-  /* Logo menor no mobile */
-  .logo-img{
-    height: 72px !important;
-  }
+      .logo-img{
+        height: 72px !important;
+      }
 
-  .brand h1{
-    font-size: 15px;
-    line-height: 1.2;
-  }
+      .brand h1{
+        font-size: 15px;
+        line-height: 1.2;
+      }
 
-  .pill{
-    width: fit-content;
-    margin: 0 auto;
-  }
+      .pill{
+        width: fit-content;
+        margin: 0 auto;
+      }
 
-  #btnReset{
-    width: 100%;
-    justify-content: center;
-    border-radius: 16px;
-  }
+      #btnReset{
+        width: 100%;
+        justify-content: center;
+        border-radius: 16px;
+      }
 
-  /* Hero mais compacto */
-  .hero{
-    padding: 18px 16px 16px;
-  }
+      .hero{
+        padding: 18px 16px 16px;
+      }
 
-  .hero h2{
-    font-size: 22px;
-    line-height: 1.2;
-  }
+      .hero h2{
+        font-size: 22px;
+        line-height: 1.2;
+      }
 
-  .hero p{
-    max-width: 100%;
-    font-size: 13px;
-    line-height: 1.55;
-  }
+      .hero p{
+        max-width: 100%;
+        font-size: 13px;
+        line-height: 1.55;
+      }
 
-  /* Inputs e botões 100% */
-  .formRow{
-    grid-template-columns: 1fr !important;
-    gap: 10px;
-  }
+      .formRow{
+        grid-template-columns: 1fr !important;
+        gap: 10px;
+      }
 
-  .actions{
-    gap: 10px;
-  }
+      .actions{
+        gap: 10px;
+      }
 
-  .actions .btn{
-    width: 100%;
-    justify-content: center;
-    padding: 14px 14px;
-    border-radius: 16px;
-  }
+      .actions .btn{
+        width: 100%;
+        justify-content: center;
+        padding: 14px 14px;
+        border-radius: 16px;
+      }
 
-  /* Cards “bullets” mais enxutos */
-  .hero .bullets{
-    grid-template-columns: 1fr !important;
-    gap: 10px;
-  }
+      .hero .bullets{
+        grid-template-columns: 1fr !important;
+        gap: 10px;
+      }
 
-  /* Guia mobile: aparece antes do CTA */
-  .mobileGuide{
-    margin: 12px 0 6px;
-    padding: 12px;
-    border: 1px solid rgba(34,48,74,.85);
-    border-radius: 16px;
-    background: rgba(15,19,32,.55);
-  }
-  .mobileGuide .title{
-    font-weight: 800;
-    margin-bottom: 6px;
-    font-size: 13px;
-  }
-  .mobileGuide .txt{
-    color: var(--muted);
-    font-size: 12px;
-    line-height: 1.55;
-  }
+      .mobileGuide{
+        margin: 12px 0 6px;
+        padding: 12px;
+        border: 1px solid rgba(34,48,74,.85);
+        border-radius: 16px;
+        background: rgba(15,19,32,.55);
+      }
+      .mobileGuide .title{
+        font-weight: 800;
+        margin-bottom: 6px;
+        font-size: 13px;
+      }
+      .mobileGuide .txt{
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.55;
+      }
 
-/* Guia mobile: por padrão some (desktop) */
-.mobileGuide{
-  display:none;
-  margin-top:12px;
-  padding:12px;
-  border-radius:16px;
-  border:1px solid rgba(34,48,74,.85);
-  background:rgba(15,19,32,.6);
-}
-.mobileGuide .title{
-  font-weight:800;
-  font-size:13px;
-  margin-bottom:6px;
-}
-.mobileGuide .txt{
-  font-size:12px;
-  color:var(--muted);
-  line-height:1.55;
-}
+      /* No mobile, some o card “Como responder” da direita */
+      .guideDesktop{
+        display: none !important;
+      }
+    }
 
-/* No mobile, aparece ANTES do botão (fica no card principal) */
-@media (max-width: 980px){
-  .mobileGuide{ display:block; }
-}
-
-  /* No mobile, some o card “Como responder” da direita (evita duplicar) */
-  .guideDesktop{
-    display: none !important;
-  }
-}
-
-/* No desktop, o guia mobile não aparece */
-@media (min-width: 721px){
-  .mobileGuide{ display:none; }
-}
-
+    /* No desktop, o guia mobile não aparece */
+    @media (min-width: 721px){
+      .mobileGuide{ display:none; }
+    }
   </style>
 </head>
 
@@ -318,62 +286,60 @@
     </div>
 
     <div id="viewLanding" class="grid">
-      <div class="card guideDesktop">
+      <!-- ✅ CARD PRINCIPAL (ESQUERDA) - SEM guideDesktop -->
+      <div class="card">
         <div class="hero">
           <h2>Diagnóstico mental do trader sob risco</h2>
-<p>
-  Descubra como sua mente reage quando o dinheiro está em jogo.
-</p>
+          <p>Descubra como sua mente reage quando o dinheiro está em jogo.</p>
 
           <div class="formRow">
-  <div>
-    <label for="name">Nome</label>
-    <input id="name" placeholder="Ex.: John" autocomplete="name" />
-  </div>
-  <div>
-    <label for="email">Email</label>
-    <input id="email" placeholder="voce@exemplo.com" autocomplete="email" />
-  </div>
-  <div>
-    <label for="market">Mercado principal</label>
-    <select id="market">
-      <option value="Day Trade">Day Trade</option>
-      <option value="Swing Trade">Swing Trade</option>
-      <option value="Cripto">Cripto</option>
-      <option value="Opções">Opções</option>
-      <option value="Forex">Forex</option>
-      <option value="Outro">Outro</option>
-    </select>
-  </div>
-  <div>
-    <label for="experience">Experiência</label>
-    <select id="experience">
-      <option value="Iniciante">Iniciante</option>
-      <option value="Intermediário">Intermediário</option>
-      <option value="Avançado">Avançado</option>
-    </select>
-  </div>
-</div>
+            <div>
+              <label for="name">Nome</label>
+              <input id="name" placeholder="Ex.: John" autocomplete="name" />
+            </div>
+            <div>
+              <label for="email">Email</label>
+              <input id="email" placeholder="voce@exemplo.com" autocomplete="email" />
+            </div>
+            <div>
+              <label for="market">Mercado principal</label>
+              <select id="market">
+                <option value="Day Trade">Day Trade</option>
+                <option value="Swing Trade">Swing Trade</option>
+                <option value="Cripto">Cripto</option>
+                <option value="Opções">Opções</option>
+                <option value="Forex">Forex</option>
+                <option value="Outro">Outro</option>
+              </select>
+            </div>
+            <div>
+              <label for="experience">Experiência</label>
+              <select id="experience">
+                <option value="Iniciante">Iniciante</option>
+                <option value="Intermediário">Intermediário</option>
+                <option value="Avançado">Avançado</option>
+              </select>
+            </div>
+          </div>
 
-<!-- Guia de instrução (SÓ MOBILE) -->
-<div class="mobileGuide">
-  <div class="title">Como responder (últimos 7 dias)</div>
-  <div class="txt">
-    Responda como você <b>agiu</b> nos últimos 7 dias sob risco — não como gostaria de agir.<br>
-    Escala: <b>1</b> Nunca, <b>2</b> Raramente, <b>3</b> Às vezes, <b>4</b> Frequentemente, <b>5</b> Sempre.
-  </div>
-</div>
+          <!-- ✅ Guia de instrução (SÓ MOBILE) -->
+          <div class="mobileGuide">
+            <div class="title">Como responder (últimos 7 dias)</div>
+            <div class="txt">
+              Responda como você <b>agiu</b> nos últimos 7 dias sob risco — não como gostaria de agir.<br>
+              Escala: <b>1</b> Nunca, <b>2</b> Raramente, <b>3</b> Às vezes, <b>4</b> Frequentemente, <b>5</b> Sempre.
+            </div>
+          </div>
 
-<div class="actions">
-
-
+          <!-- ✅ UMA ÚNICA actions (corrigido) -->
           <div class="actions">
             <button id="btnStart" class="btn primary" type="button">Começar meu diagnóstico</button>
             <button id="btnLoad" class="btn ghost" type="button">Continuar (se houver)</button>
           </div>
-<p class="small muted" style="margin-top:8px">
-  ⏱ Leva cerca de 4–6 minutos • Responda como você agiu nos últimos 7 dias sob risco.
-</p>
+
+          <p class="small muted" style="margin-top:8px">
+            ⏱ Leva cerca de 4–6 minutos • Responda como você agiu nos últimos 7 dias sob risco.
+          </p>
 
           <div class="hero bullets">
             <div class="b"><div class="t">4 Dimensões</div><div class="d">Controle, Risco, Autonomia e Aprendizado.</div></div>
@@ -384,7 +350,8 @@
         </div>
       </div>
 
-      <div class="card">
+      <!-- ✅ CARD DIREITA (DESKTOP) - COM guideDesktop -->
+      <div class="card guideDesktop">
         <div class="inner">
           <div class="sectionTitle"><h3>Como responder</h3></div>
           <p class="small muted">
@@ -577,7 +544,7 @@
     Pontuação alta indica autoria plena.<br><br>
     <b>Aprendizado Adaptativo</b><br>
     Pontuação baixa indica repetição de erros.<br>
-    Pontuação alta indica evolução contínua.<br>
+    Pontuação alta indica evolução contínua por feedback.<br>
     <div class="divider"></div>
     <b>Encerramento da Devolutiva</b><br>
     Seu gráfico mostra <b>onde desenvolver</b>, não onde se julgar.<br><br>
@@ -815,7 +782,6 @@
     const canvas = document.getElementById('radar');
     if (!canvas) return;
 
-    // Se Chart.js não carregou, não quebra o site
     if (typeof Chart === "undefined") {
       showToast("Aviso: Chart.js não carregou. Resultado exibido sem gráfico.");
       return;
@@ -1023,3 +989,4 @@
 </script>
 </body>
 </html>
+
