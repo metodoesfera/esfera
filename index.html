@@ -162,6 +162,39 @@
       display: block;
       filter: brightness(0) invert(1) drop-shadow(0 12px 32px rgba(0,0,0,.55));
     }
+
+/* ============================
+   Mobile-first adjustments
+============================ */
+@media (max-width: 640px) {
+  .hero h2 {
+    font-size: 20px;
+    line-height: 1.25;
+  }
+
+  .hero p {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .btn.primary {
+    padding: 16px 18px;
+    font-size: 15px;
+  }
+
+  .hero .bullets {
+    grid-template-columns: 1fr;
+  }
+
+  .b {
+    padding: 10px;
+  }
+}
+
   </style>
 </head>
 
@@ -181,11 +214,10 @@
     <div id="viewLanding" class="grid">
       <div class="card">
         <div class="hero">
-          <h2>Diagnóstico dimensional da mente do trader</h2>
-          <p>
-            O ESFERA™ não define quem você é. Ele mostra como sua mente está operando sob risco <b>agora</b>.
-            Quanto mais equilibrado o gráfico, maior sua consistência emocional, cognitiva e estratégica.
-          </p>
+          <h2>Diagnóstico mental do trader sob risco</h2>
+<p>
+  Descubra como sua mente reage quando o dinheiro está em jogo.
+</p>
 
           <div class="formRow">
             <div>
@@ -218,7 +250,10 @@
           </div>
 
           <div class="actions">
-            <button id="btnStart" class="btn primary" type="button">Começar o teste</button>
+            <button id="btnStart" class="btn primary" type="button">Começar meu diagnóstico</button>
+<p class="small muted" style="margin-top:8px">
+  ⏱ Leva cerca de 4–6 minutos • Responda como você agiu nos últimos 7 dias sob risco.
+</p>
             <button id="btnLoad" class="btn ghost" type="button">Continuar (se houver)</button>
           </div>
 
