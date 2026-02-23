@@ -450,6 +450,112 @@
   // ============================
   const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwWbLUImALg8tERWfJfNCSPmgJPh4ZBZiNk7po2elW0nUU8mycJv2B6np2FFpeSAVvY/exec";
 
+  // ============================
+  // GATE (proteção por sessão)
+  // ============================
+  const ENTRY_WEBAPP_URL = WEBAPP_URL; // para redirecionar ao Entrada do Apps Script
+  const AUTH_STORAGE_KEY = "esfera_auth_v1";
+
+  function getQueryParam(name) {
+    try {
+      return new URLSearchParams(window.location.search).get(name) || "";
+    } catch {
+      return "";
+    }
+  }
+
+  function setBlockScreen(message) {
+    // bloqueia a interface enquanto valida (UX)
+    document.body.innerHTML = `
+      <div style="
+        min-height:100vh;display:flex;align-items:center;justify-content:center;
+        background: radial-gradient(1200px 700px at 18% 12%, rgba(124,92,255,.12), transparent 70%),
+                    radial-gradient(1000px 650px at 82% 18%, rgba(25,195,125,.08), transparent 72%),
+                    radial-gradient(900px 700px at 50% 95%, rgba(255,255,255,.04), transparent 70%),
+                    #18243a;
+        color:#e9ecf1;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+        padding:24px;text-align:center;">
+        <div style="max-width:520px;width:100%;background:rgba(17,21,34,.75);border:1px solid rgba(34,48,74,.9);
+          border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.45);padding:18px;">
+          <div style="font-weight:800;font-size:16px;margin-bottom:8px;">ESFERA™</div>
+          <div style="color:#aab3c2;font-size:13px;line-height:1.6;">${message || "Validando acesso..."}</div>
+          <div style="margin-top:14px;font-size:12px;color:#aab3c2;">Se isso demorar, verifique sua conexão.</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function jsonpValidateSession(sessionKey, email) {
+    return new Promise((resolve) => {
+      const cb = "cb_esfera_" + Math.random().toString(36).slice(2);
+      const script = document.createElement("script");
+
+      window[cb] = function (res) {
+        try { delete window[cb]; } catch {}
+        script.remove();
+        resolve(res);
+      };
+
+      const url = ENTRY_WEBAPP_URL
+        + "?action=validateSession"
+        + "&s=" + encodeURIComponent(sessionKey || "")
+        + "&e=" + encodeURIComponent((email || "").toLowerCase())
+        + "&callback=" + encodeURIComponent(cb);
+
+      script.src = url;
+      script.onerror = function () {
+        try { delete window[cb]; } catch {}
+        script.remove();
+        resolve({ ok: false, code: "NETWORK", message: "Falha de rede ao validar sessão." });
+      };
+
+      document.head.appendChild(script);
+    });
+  }
+
+  async function enforceGateOrRedirect() {
+    // 1) tenta pela URL (?s=...&e=...)
+    let s = getQueryParam("s");
+    let e = getQueryParam("e");
+
+    // 2) fallback: tenta do storage (pra caso a pessoa recarregue a página)
+    if (!s || !e) {
+      try {
+        const saved = JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || "null");
+        if (saved && saved.s && saved.e) {
+          s = s || saved.s;
+          e = e || saved.e;
+        }
+      } catch {}
+    }
+
+    // 3) se não tem sessão/email => volta pro Entrada do Apps Script
+    if (!s || !e) {
+      setBlockScreen("Acesso protegido. Redirecionando para login…");
+      window.location.href = ENTRY_WEBAPP_URL + "?page=entrada";
+      return false;
+    }
+
+    // 4) valida a sessão no Apps Script (JSONP)
+    setBlockScreen("Validando seu acesso…");
+    const res = await jsonpValidateSession(s, e);
+
+    if (!res || !res.ok) {
+      setBlockScreen("Sessão inválida ou expirada. Redirecionando para login…");
+      // limpa storage para não ficar em loop
+      try { localStorage.removeItem(AUTH_STORAGE_KEY); } catch {}
+      window.location.href = ENTRY_WEBAPP_URL + "?page=entrada";
+      return false;
+    }
+
+    // 5) sessão válida => salva para reloads
+    try {
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ s, e, validatedAt: new Date().toISOString() }));
+    } catch {}
+
+    return true;
+  }
+
   const QUESTIONS = [
     "Quando identifico uma possível entrada, consigo esperar a confirmação completa do meu plano.",
     "Mesmo vendo o preço se mover rápido, evito entrar sem checklist mental claro.",
@@ -970,18 +1076,21 @@
   // ============================
   // Boot
   // ============================
-  (function init(){
-    const prev = loadState();
-    if(prev){
-      inputName.value = prev.meta?.name || '';
-      inputEmail.value = prev.meta?.email || '';
-      inputMarket.value = prev.meta?.market || 'Day Trade';
-      inputExperience.value = prev.meta?.experience || 'Iniciante';
-      btnLoad.textContent = 'Continuar (progresso encontrado)';
-    } else {
-      btnLoad.textContent = 'Continuar (se houver)';
-    }
-    showLanding();
+    // ============================
+  // Boot (com gate)
+  // ============================
+    (async function init(){
+    const ok = await enforceGateOrRedirect();
+    if (!ok) return;
+
+    // Agora que validou, a página pode carregar normalmente
+    // (não mexe no body)
+    // Então: remova a tela de bloqueio recarregando apenas a UI:
+    // → A forma simples: recarrega a página (mais confiável)
+    // Se preferir sem reload, me avisa que eu faço a versão "overlay" (ainda melhor).
+
+    // ✅ versão simples e estável:
+    window.location.replace(window.location.pathname + window.location.search);
   })();
 </script>
 </body>
