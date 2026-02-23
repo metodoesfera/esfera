@@ -1,4 +1,4 @@
-<!doc<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
@@ -163,112 +163,60 @@
       filter: brightness(0) invert(1) drop-shadow(0 12px 32px rgba(0,0,0,.55));
     }
 
-    /* ============================
-       MOBILE POLISH (não afeta desktop)
-       ============================ */
     @media (max-width: 720px){
-      .wrap{
-        padding: 18px 14px calc(32px + env(safe-area-inset-bottom)) !important;
-      }
-
-      .topbar{
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-        padding: 12px;
-      }
-
-      .brand{
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 10px;
-      }
-
-      .logo-img{
-        height: 72px !important;
-      }
-
-      .brand h1{
-        font-size: 15px;
-        line-height: 1.2;
-      }
-
-      .pill{
-        width: fit-content;
-        margin: 0 auto;
-      }
-
-      #btnReset{
-        width: 100%;
-        justify-content: center;
-        border-radius: 16px;
-      }
-
-      .hero{
-        padding: 18px 16px 16px;
-      }
-
-      .hero h2{
-        font-size: 22px;
-        line-height: 1.2;
-      }
-
-      .hero p{
-        max-width: 100%;
-        font-size: 13px;
-        line-height: 1.55;
-      }
-
-      .formRow{
-        grid-template-columns: 1fr !important;
-        gap: 10px;
-      }
-
-      .actions{
-        gap: 10px;
-      }
-
-      .actions .btn{
-        width: 100%;
-        justify-content: center;
-        padding: 14px 14px;
-        border-radius: 16px;
-      }
-
-      .hero .bullets{
-        grid-template-columns: 1fr !important;
-        gap: 10px;
-      }
-
+      .wrap{ padding: 18px 14px calc(32px + env(safe-area-inset-bottom)) !important; }
+      .topbar{ flex-direction: column; align-items: stretch; gap: 10px; padding: 12px; }
+      .brand{ flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+      .logo-img{ height: 72px !important; }
+      .brand h1{ font-size: 15px; line-height: 1.2; }
+      .pill{ width: fit-content; margin: 0 auto; }
+      #btnReset{ width: 100%; justify-content: center; border-radius: 16px; }
+      .hero{ padding: 18px 16px 16px; }
+      .hero h2{ font-size: 22px; line-height: 1.2; }
+      .hero p{ max-width: 100%; font-size: 13px; line-height: 1.55; }
+      .formRow{ grid-template-columns: 1fr !important; gap: 10px; }
+      .actions{ gap: 10px; }
+      .actions .btn{ width: 100%; justify-content: center; padding: 14px 14px; border-radius: 16px; }
+      .hero .bullets{ grid-template-columns: 1fr !important; gap: 10px; }
       .mobileGuide{
-        margin: 12px 0 6px;
-        padding: 12px;
-        border: 1px solid rgba(34,48,74,.85);
-        border-radius: 16px;
-        background: rgba(15,19,32,.55);
+        margin: 12px 0 6px; padding: 12px; border: 1px solid rgba(34,48,74,.85);
+        border-radius: 16px; background: rgba(15,19,32,.55);
       }
-      .mobileGuide .title{
-        font-weight: 800;
-        margin-bottom: 6px;
-        font-size: 13px;
-      }
-      .mobileGuide .txt{
-        color: var(--muted);
-        font-size: 12px;
-        line-height: 1.55;
-      }
-
-      /* No mobile, some o card “Como responder” da direita */
-      .guideDesktop{
-        display: none !important;
-      }
+      .mobileGuide .title{ font-weight: 800; margin-bottom: 6px; font-size: 13px; }
+      .mobileGuide .txt{ color: var(--muted); font-size: 12px; line-height: 1.55; }
+      .guideDesktop{ display: none !important; }
     }
-
-    /* No desktop, o guia mobile não aparece */
     @media (min-width: 721px){
       .mobileGuide{ display:none; }
     }
+
+    /* Overlay do gate (por cima, sem apagar seu HTML) */
+    #gateOverlay{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      z-index:9999999;
+      background:
+        radial-gradient(1200px 700px at 18% 12%, rgba(124,92,255,.12), transparent 70%),
+        radial-gradient(1000px 650px at 82% 18%, rgba(25,195,125,.08), transparent 72%),
+        radial-gradient(900px 700px at 50% 95%, rgba(255,255,255,.04), transparent 70%),
+        #18243a;
+    }
+    #gateOverlay .box{
+      max-width:520px;width:100%;
+      background:rgba(17,21,34,.75);
+      border:1px solid rgba(34,48,74,.9);
+      border-radius:18px;
+      box-shadow:0 20px 60px rgba(0,0,0,.45);
+      padding:18px;
+      text-align:center;
+    }
+    #gateOverlay .t{font-weight:800;font-size:16px;margin-bottom:8px;color:#e9ecf1}
+    #gateOverlay .m{color:#aab3c2;font-size:13px;line-height:1.6}
+    #gateOverlay .h{margin-top:14px;font-size:12px;color:#aab3c2}
   </style>
 </head>
 
@@ -286,7 +234,6 @@
     </div>
 
     <div id="viewLanding" class="grid">
-      <!-- ✅ CARD PRINCIPAL (ESQUERDA) - SEM guideDesktop -->
       <div class="card">
         <div class="hero">
           <h2>Diagnóstico mental do trader sob risco</h2>
@@ -319,7 +266,6 @@
             </div>
           </div>
 
-          <!-- ✅ Guia de instrução (SÓ MOBILE) -->
           <div class="mobileGuide">
             <div class="title">Como responder (últimos 7 dias)</div>
             <div class="txt">
@@ -328,7 +274,6 @@
             </div>
           </div>
 
-          <!-- ✅ UMA ÚNICA actions (corrigido) -->
           <div class="actions">
             <button id="btnStart" class="btn primary" type="button">Começar meu diagnóstico</button>
             <button id="btnLoad" class="btn ghost" type="button">Continuar (se houver)</button>
@@ -347,7 +292,6 @@
         </div>
       </div>
 
-      <!-- ✅ CARD DIREITA (DESKTOP) - COM guideDesktop -->
       <div class="card guideDesktop">
         <div class="inner">
           <div class="sectionTitle"><h3>Como responder</h3></div>
@@ -453,44 +397,55 @@
   // ============================
   // GATE (proteção por sessão)
   // ============================
-  const ENTRY_WEBAPP_URL = WEBAPP_URL; // para redirecionar ao Entrada do Apps Script
+  const ENTRY_WEBAPP_URL = WEBAPP_URL; // Entrada do Apps Script
   const AUTH_STORAGE_KEY = "esfera_auth_v1";
 
   function getQueryParam(name) {
-    try {
-      return new URLSearchParams(window.location.search).get(name) || "";
-    } catch {
-      return "";
-    }
+    try { return new URLSearchParams(window.location.search).get(name) || ""; }
+    catch { return ""; }
   }
 
-  function setBlockScreen(message) {
-    // bloqueia a interface enquanto valida (UX)
-    document.body.innerHTML = `
-      <div style="
-        min-height:100vh;display:flex;align-items:center;justify-content:center;
-        background: radial-gradient(1200px 700px at 18% 12%, rgba(124,92,255,.12), transparent 70%),
-                    radial-gradient(1000px 650px at 82% 18%, rgba(25,195,125,.08), transparent 72%),
-                    radial-gradient(900px 700px at 50% 95%, rgba(255,255,255,.04), transparent 70%),
-                    #18243a;
-        color:#e9ecf1;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
-        padding:24px;text-align:center;">
-        <div style="max-width:520px;width:100%;background:rgba(17,21,34,.75);border:1px solid rgba(34,48,74,.9);
-          border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.45);padding:18px;">
-          <div style="font-weight:800;font-size:16px;margin-bottom:8px;">ESFERA™</div>
-          <div style="color:#aab3c2;font-size:13px;line-height:1.6;">${message || "Validando acesso..."}</div>
-          <div style="margin-top:14px;font-size:12px;color:#aab3c2;">Se isso demorar, verifique sua conexão.</div>
-        </div>
+  function ensureGateOverlay(){
+    let el = document.getElementById("gateOverlay");
+    if (el) return el;
+
+    el = document.createElement("div");
+    el.id = "gateOverlay";
+    el.innerHTML = `
+      <div class="box">
+        <div class="t">ESFERA™</div>
+        <div class="m" id="gateMsg">Validando acesso…</div>
+        <div class="h" id="gateHint">Se isso demorar, verifique sua conexão.</div>
       </div>
     `;
+    document.body.appendChild(el);
+    return el;
   }
 
-  function jsonpValidateSession(sessionKey, email) {
+  function setGateMessage(msg){
+    const overlay = ensureGateOverlay();
+    const m = overlay.querySelector("#gateMsg");
+    if (m) m.textContent = msg || "Validando acesso…";
+  }
+
+  function hideGateOverlay(){
+    const el = document.getElementById("gateOverlay");
+    if (el) el.remove();
+  }
+
+  function jsonpValidateSession(sessionKey, email, timeoutMs = 12000) {
     return new Promise((resolve) => {
       const cb = "cb_esfera_" + Math.random().toString(36).slice(2);
       const script = document.createElement("script");
 
+      const timer = setTimeout(() => {
+        try { delete window[cb]; } catch {}
+        script.remove();
+        resolve({ ok:false, code:"TIMEOUT", message:"Tempo limite ao validar sessão." });
+      }, timeoutMs);
+
       window[cb] = function (res) {
+        clearTimeout(timer);
         try { delete window[cb]; } catch {}
         script.remove();
         resolve(res);
@@ -503,7 +458,9 @@
         + "&callback=" + encodeURIComponent(cb);
 
       script.src = url;
+
       script.onerror = function () {
+        clearTimeout(timer);
         try { delete window[cb]; } catch {}
         script.remove();
         resolve({ ok: false, code: "NETWORK", message: "Falha de rede ao validar sessão." });
@@ -514,11 +471,11 @@
   }
 
   async function enforceGateOrRedirect() {
-    // 1) tenta pela URL (?s=...&e=...)
+    // 1) pega da URL
     let s = getQueryParam("s");
     let e = getQueryParam("e");
 
-    // 2) fallback: tenta do storage (pra caso a pessoa recarregue a página)
+    // 2) fallback: storage (reload)
     if (!s || !e) {
       try {
         const saved = JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || "null");
@@ -529,30 +486,32 @@
       } catch {}
     }
 
-    // 3) se não tem sessão/email => volta pro Entrada do Apps Script
+    // 3) sem sessão => manda pro login
     if (!s || !e) {
-      setBlockScreen("Acesso protegido. Redirecionando para login…");
+      setGateMessage("Acesso protegido. Redirecionando para login…");
       window.location.href = ENTRY_WEBAPP_URL + "?page=entrada";
       return false;
     }
 
-    // 4) valida a sessão no Apps Script (JSONP)
-    setBlockScreen("Validando seu acesso…");
+    // 4) mostra overlay e valida
+    setGateMessage("Validando seu acesso…");
     const res = await jsonpValidateSession(s, e);
 
     if (!res || !res.ok) {
-      setBlockScreen("Sessão inválida ou expirada. Redirecionando para login…");
-      // limpa storage para não ficar em loop
+      setGateMessage("Sessão inválida ou expirada. Redirecionando para login…");
       try { localStorage.removeItem(AUTH_STORAGE_KEY); } catch {}
-      window.location.href = ENTRY_WEBAPP_URL + "?page=entrada";
+      setTimeout(() => {
+        window.location.href = ENTRY_WEBAPP_URL + "?page=entrada";
+      }, 500);
       return false;
     }
 
-    // 5) sessão válida => salva para reloads
+    // 5) sessão ok => salva e remove overlay
     try {
       localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ s, e, validatedAt: new Date().toISOString() }));
     } catch {}
 
+    hideGateOverlay();
     return true;
   }
 
@@ -1074,25 +1033,26 @@
   });
 
   // ============================
-  // Boot
-  // ============================
-    // ============================
   // Boot (com gate)
   // ============================
-    (async function init(){
+  (async function init(){
+    // Overlay aparece só se precisar validar
+    ensureGateOverlay();
     const ok = await enforceGateOrRedirect();
     if (!ok) return;
 
-    // Agora que validou, a página pode carregar normalmente
-    // (não mexe no body)
-    // Então: remova a tela de bloqueio recarregando apenas a UI:
-    // → A forma simples: recarrega a página (mais confiável)
-    // Se preferir sem reload, me avisa que eu faço a versão "overlay" (ainda melhor).
-
-    // ✅ versão simples e estável:
-    window.location.replace(window.location.pathname + window.location.search);
+    const prev = loadState();
+    if(prev){
+      inputName.value = prev.meta?.name || '';
+      inputEmail.value = prev.meta?.email || '';
+      inputMarket.value = prev.meta?.market || 'Day Trade';
+      inputExperience.value = prev.meta?.experience || 'Iniciante';
+      btnLoad.textContent = 'Continuar (progresso encontrado)';
+    } else {
+      btnLoad.textContent = 'Continuar (se houver)';
+    }
+    showLanding();
   })();
 </script>
 </body>
 </html>
-
