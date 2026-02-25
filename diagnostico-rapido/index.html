@@ -1,1 +1,736 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Método Esfera — Diagnóstico Rápido</title>
+  <meta name="description" content="Teste rápido baseado em neurociência aplicada ao mercado para identificar seu padrão neuroemocional no trade." />
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --card:#111827;
+      --muted:#9ca3af;
+      --text:#f9fafb;
+      --line:#1f2937;
+      --accent:#22c55e;
+      --accent2:#60a5fa;
+      --danger:#f97316;
+      --radius:18px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 700px at 20% 10%, rgba(96,165,250,.14), transparent 55%),
+                  radial-gradient(900px 600px at 80% 30%, rgba(34,197,94,.10), transparent 50%),
+                  var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    a{color:inherit}
+    .wrap{
+      width:min(760px, 100%);
+    }
+    .topbar{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:14px;
+      opacity:.95;
+    }
+    .badge{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 12px;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:999px;
+      background: rgba(17,24,39,.6);
+      backdrop-filter: blur(10px);
+      font-size:13px;
+      color:var(--muted);
+    }
+    .card{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(17,24,39,.72);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .header{
+      padding:22px 22px 0;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size: clamp(22px, 3.4vw, 34px);
+      line-height:1.1;
+      letter-spacing:-.02em;
+    }
+    .sub{
+      margin:0;
+      color:var(--muted);
+      line-height:1.5;
+      font-size: 15px;
+    }
+    .content{
+      padding:18px 22px 22px;
+    }
+    .grid{
+      display:grid;
+      gap:14px;
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 720px){
+      .grid{grid-template-columns:1fr;}
+    }
+    label{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    input{
+      width:100%;
+      padding:12px 12px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(11,15,20,.55);
+      color:var(--text);
+      outline:none;
+      font-size:15px;
+    }
+    input:focus{
+      border-color: rgba(96,165,250,.55);
+      box-shadow: 0 0 0 3px rgba(96,165,250,.18);
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .btn{
+      cursor:pointer;
+      border:none;
+      border-radius: 14px;
+      padding:12px 14px;
+      font-weight:700;
+      font-size:15px;
+      color:#06110b;
+      background: linear-gradient(135deg, rgba(34,197,94,1), rgba(16,185,129,1));
+      box-shadow: 0 10px 20px rgba(34,197,94,.18);
+    }
+    .btn.secondary{
+      color:var(--text);
+      background: rgba(11,15,20,.35);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:none;
+      font-weight:650;
+    }
+    .btn:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+    }
+    .divider{
+      height:1px;
+      background: rgba(255,255,255,.10);
+      margin:18px 0;
+    }
+    .quiz{
+      padding:16px;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: 16px;
+      background: rgba(11,15,20,.25);
+    }
+    .progress{
+      height:10px;
+      width:100%;
+      background: rgba(255,255,255,.08);
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(96,165,250,1), rgba(34,197,94,1));
+      border-radius:999px;
+      transition: width .25s ease;
+    }
+    .qmeta{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .qtitle{
+      margin:14px 0 10px;
+      font-size:18px;
+      line-height:1.35;
+      letter-spacing:-.01em;
+    }
+    .choices{
+      display:grid;
+      gap:10px;
+    }
+    .choice{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      padding:12px 12px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      background: rgba(17,24,39,.35);
+      cursor:pointer;
+      transition: transform .05s ease, border-color .15s ease, background .15s ease;
+    }
+    .choice:hover{
+      border-color: rgba(96,165,250,.45);
+      background: rgba(96,165,250,.10);
+    }
+    .choice input{
+      width:auto;
+      margin-top:2px;
+    }
+    .choice .t{
+      font-size:14px;
+      color:var(--text);
+      line-height:1.35;
+    }
+    .hint{
+      margin:10px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+    .error{
+      color: #fecaca;
+      background: rgba(248,113,113,.12);
+      border:1px solid rgba(248,113,113,.25);
+      padding:10px 12px;
+      border-radius: 14px;
+      margin-top:12px;
+      display:none;
+      font-size:14px;
+    }
+    .result{
+      display:none;
+      padding:16px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(11,15,20,.25);
+    }
+    .pill{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(17,24,39,.35);
+      color:var(--muted);
+      font-size:13px;
+    }
+    .rtitle{
+      margin:10px 0 6px;
+      font-size:22px;
+      letter-spacing:-.02em;
+      line-height:1.2;
+    }
+    .rdesc{
+      margin:0 0 12px;
+      color:var(--muted);
+      line-height:1.55;
+      font-size:15px;
+    }
+    ul{
+      margin:0;
+      padding-left:18px;
+      color:var(--text);
+    }
+    li{margin:6px 0; color:rgba(249,250,251,.92)}
+    .foot{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.5;
+      opacity:.95;
+    }
+    .tiny{
+      font-size:12px;
+      color:var(--muted);
+    }
+    .tag{
+      color: rgba(34,197,94,.95);
+      font-weight:800;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="badge">🧠 <strong style="color:#e5e7eb;font-weight:800;">Método Esfera</strong> <span>— Diagnóstico Rápido</span></div>
+      <div class="badge">⏱️ 2 min • 16 perguntas</div>
+    </div>
 
+    <div class="card">
+      <div class="header">
+        <h1>Seu maior problema no trade não é a estratégia.<br/>É o jeito que seu cérebro reage ao mercado.</h1>
+        <p class="sub">Faça o teste rápido e descubra qual padrão neuroemocional mais sabota sua execução. Baseado em neurociência aplicada ao mercado.</p>
+      </div>
+
+      <div class="content">
+        <!-- LEAD FORM -->
+        <div id="leadBlock">
+          <div class="grid">
+            <div>
+              <label for="name">Seu nome</label>
+              <input id="name" autocomplete="name" placeholder="Ex.: João" />
+            </div>
+            <div>
+              <label for="email">Seu e-mail</label>
+              <input id="email" autocomplete="email" inputmode="email" placeholder="voce@exemplo.com" />
+            </div>
+            <div>
+              <label for="phone">Seu telefone (WhatsApp)</label>
+              <input id="phone" autocomplete="tel" inputmode="tel" placeholder="(11) 99999-9999" />
+              <div class="tiny" style="margin-top:6px;">A gente usa só pra contato do conteúdo/mentoria. Nada de spam absurdo.</div>
+            </div>
+            <div style="display:flex;align-items:flex-end;">
+              <button class="btn" id="startBtn">👉 Começar o diagnóstico</button>
+            </div>
+          </div>
+
+          <div class="error" id="leadError"></div>
+
+          <div class="divider"></div>
+          <div class="row">
+            <div class="tiny">
+              <span class="tag">Sem promessa vazia.</span> É diagnóstico, não “motivação”.
+            </div>
+            <div class="tiny">Ao continuar, você concorda com o uso dos seus dados para envio do diagnóstico e conteúdos do Método Esfera.</div>
+          </div>
+        </div>
+
+        <!-- QUIZ -->
+        <div class="quiz" id="quizBlock" style="display:none;">
+          <div class="progress" aria-label="Progresso do teste"><div class="bar" id="bar"></div></div>
+          <div class="qmeta">
+            <div id="qCount">Pergunta 1 de 16</div>
+            <div class="pill">Responda sem pensar demais.</div>
+          </div>
+
+          <div class="qtitle" id="qText"></div>
+
+          <div class="choices" id="choices"></div>
+
+          <div class="row" style="margin-top:14px;">
+            <button class="btn secondary" id="backBtn">⬅️ Voltar</button>
+            <button class="btn" id="nextBtn" disabled>Próxima ➜</button>
+          </div>
+
+          <div class="error" id="quizError"></div>
+          <p class="hint">Dica: o mercado não quer sua opinião. Ele quer seu padrão. Responde no automático mesmo.</p>
+        </div>
+
+        <!-- RESULT -->
+        <div class="result" id="resultBlock">
+          <div class="pill">✅ Diagnóstico gerado</div>
+          <div class="rtitle" id="rTitle"></div>
+          <p class="rdesc" id="rDesc"></p>
+          <div id="rBullets"></div>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <button class="btn secondary" id="restartBtn">Refazer teste</button>
+            <button class="btn" id="sendBtn">📩 Enviar diagnóstico no e-mail</button>
+          </div>
+
+          <div class="error" id="sendError"></div>
+
+          <div class="foot">
+            O teste de 16 perguntas é um rastreio inicial. Ele mostra <strong>qual padrão está mais ativo hoje</strong>, mas não aprofunda origem e reprogramação completa.
+            O próximo passo (diagnóstico completo) é onde a gente destrincha isso de verdade.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================
+    // CONFIG
+    // =========================
+    const APPS_SCRIPT_WEBAPP_URL = ""; // <-- depois a gente cola aqui a URL do Web App (Apps Script)
+
+    // Perfis:
+    // REA = Reatividade Emocional
+    // ANS = Ansiedade Antecipatória
+    // AVL = Aversão à Perda
+    // RIG = Rigidez Cognitiva
+
+    const QUESTIONS = [
+      // REA (1-4)
+      { key:"REA", text:"Eu entro em operações mesmo sabendo que o setup não está 100% fechado." },
+      { key:"REA", text:"Quando perco uma operação, sinto vontade de recuperar rapidamente." },
+      { key:"REA", text:"Já cliquei em comprar/vender no impulso e me arrependi logo depois." },
+      { key:"REA", text:"Mudanças rápidas no preço mexem muito comigo." },
+
+      // ANS (5-8)
+      { key:"ANS", text:"Eu evito entrar em boas operações por medo de errar." },
+      { key:"ANS", text:"Eu penso demais no que pode dar errado e travo." },
+      { key:"ANS", text:"Sinto tensão física (peito/respiração) antes de clicar pra entrar." },
+      { key:"ANS", text:"Eu prefiro não operar do que correr o risco de perder." },
+
+      // AVL (9-12)
+      { key:"AVL", text:"Tenho dificuldade de aceitar stop e fico tentando “dar espaço” demais." },
+      { key:"AVL", text:"Eu saio cedo demais quando tô ganhando, com medo de devolver." },
+      { key:"AVL", text:"Perder dói mais do que ganhar dá prazer." },
+      { key:"AVL", text:"Às vezes eu altero o plano só pra evitar fechar no prejuízo." },
+
+      // RIG (13-16)
+      { key:"RIG", text:"Tenho dificuldade de me adaptar quando o mercado muda." },
+      { key:"RIG", text:"Sigo métodos antigos mesmo quando o mercado tá diferente." },
+      { key:"RIG", text:"Fico preso no ‘sempre fiz assim’ e demoro pra mudar." },
+      { key:"RIG", text:"Demoro pra aceitar que preciso ajustar minha execução/abordagem." },
+    ];
+
+    // Escala (4 pontos) — rápida e simples
+    const SCALE = [
+      { label:"Discordo", value:0 },
+      { label:"Às vezes", value:1 },
+      { label:"Quase sempre", value:2 },
+      { label:"Sempre", value:3 },
+    ];
+
+    const PROFILE_COPY = {
+      REA: {
+        name: "⚠️ Reatividade Emocional",
+        desc: "Na hora do trade, seu cérebro entra no modo ‘ameaça’. Você até sabe o que fazer, mas a emoção toma o volante no clique.",
+        bullets: [
+          "Entra fora do plano quando sente pressão",
+          "Tenta recuperar prejuízo no impulso",
+          "Devolve lucro por decisões emocionais",
+        ]
+      },
+      ANS: {
+        name: "🟦 Ansiedade Antecipatória",
+        desc: "Você vive o trade antes do trade acontecer. O medo do erro te faz travar, perder timing e operar com tensão.",
+        bullets: [
+          "Perde boas entradas por medo de errar",
+          "Pensa demais e executa de menos",
+          "Opera tenso e se desgasta rápido",
+        ]
+      },
+      AVL: {
+        name: "🟨 Aversão à Perda",
+        desc: "Seu cérebro odeia perder. A dor do prejuízo manda mais do que a lógica — e isso distorce sua gestão (stop e gain).",
+        bullets: [
+          "Segura stop mais do que deveria",
+          "Corta ganho cedo pra ‘garantir’",
+          "Altera plano pra evitar fechar negativo",
+        ]
+      },
+      RIG: {
+        name: "🟩 Rigidez Cognitiva",
+        desc: "Você busca controle total e se prende no ‘certo’. Só que mercado muda — e rigidez vira atraso, te deixando previsível.",
+        bullets: [
+          "Demora pra ajustar quando o mercado muda",
+          "Fica preso no padrão/hábito",
+          "Executa bem só quando tudo ‘encaixa’",
+        ]
+      }
+    };
+
+    // =========================
+    // STATE
+    // =========================
+    const state = {
+      lead: { name:"", email:"", phone:"" },
+      index: 0,
+      answers: Array(QUESTIONS.length).fill(null), // each: { value, label }
+      scores: { REA:0, ANS:0, AVL:0, RIG:0 },
+      dominant: null,
+    };
+
+    // =========================
+    // HELPERS
+    // =========================
+    const $ = (id) => document.getElementById(id);
+
+    function normalizePhone(phone){
+      return String(phone || "").replace(/[^\d]/g,"");
+    }
+
+    function isValidEmail(email){
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email||"").trim());
+    }
+
+    function formatPhoneBR(value){
+      // Input mask (simple) for BR phones with DDD
+      const digits = String(value || "").replace(/\D/g,"").slice(0,11);
+      const len = digits.length;
+      if(len === 0) return "";
+      if(len < 3) return `(${digits}`;
+      if(len < 7) return `(${digits.slice(0,2)}) ${digits.slice(2)}`;
+      if(len < 11) return `(${digits.slice(0,2)}) ${digits.slice(2,6)}-${digits.slice(6)}`;
+      return `(${digits.slice(0,2)}) ${digits.slice(2,7)}-${digits.slice(7)}`;
+    }
+
+    function showError(el, msg){
+      el.textContent = msg;
+      el.style.display = "block";
+    }
+    function hideError(el){
+      el.textContent = "";
+      el.style.display = "none";
+    }
+
+    function calcScores(){
+      const scores = { REA:0, ANS:0, AVL:0, RIG:0 };
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        const a = state.answers[i];
+        if(a && typeof a.value === "number"){
+          scores[q.key] += a.value;
+        }
+      }
+      state.scores = scores;
+      return scores;
+    }
+
+    function dominantProfile(scores){
+      let bestKey = "REA";
+      let best = -1;
+      for(const k of Object.keys(scores)){
+        if(scores[k] > best){
+          best = scores[k];
+          bestKey = k;
+        }
+      }
+      return bestKey;
+    }
+
+    function renderQuestion(){
+      const q = QUESTIONS[state.index];
+      $("qText").textContent = q.text;
+
+      $("qCount").textContent = `Pergunta ${state.index+1} de ${QUESTIONS.length}`;
+      $("bar").style.width = `${Math.round(((state.index) / QUESTIONS.length) * 100)}%`;
+
+      const choices = $("choices");
+      choices.innerHTML = "";
+
+      const saved = state.answers[state.index];
+
+      SCALE.forEach((opt, idx) => {
+        const id = `opt_${state.index}_${idx}`;
+        const wrap = document.createElement("label");
+        wrap.className = "choice";
+        wrap.setAttribute("for", id);
+
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = `q_${state.index}`;
+        radio.id = id;
+        radio.value = String(opt.value);
+        radio.checked = saved ? saved.value === opt.value : false;
+
+        radio.addEventListener("change", () => {
+          state.answers[state.index] = { value: opt.value, label: opt.label };
+          $("nextBtn").disabled = false;
+          hideError($("quizError"));
+        });
+
+        const t = document.createElement("div");
+        t.className = "t";
+        t.textContent = opt.label;
+
+        wrap.appendChild(radio);
+        wrap.appendChild(t);
+        choices.appendChild(wrap);
+      });
+
+      $("backBtn").disabled = state.index === 0;
+      $("nextBtn").textContent = (state.index === QUESTIONS.length - 1) ? "Finalizar ➜" : "Próxima ➜";
+      $("nextBtn").disabled = !state.answers[state.index];
+    }
+
+    function showQuiz(){
+      $("leadBlock").style.display = "none";
+      $("quizBlock").style.display = "block";
+      $("resultBlock").style.display = "none";
+      state.index = 0;
+      renderQuestion();
+    }
+
+    function showResult(){
+      $("quizBlock").style.display = "none";
+      $("resultBlock").style.display = "block";
+
+      $("bar").style.width = `100%`;
+
+      const scores = calcScores();
+      const dom = dominantProfile(scores);
+      state.dominant = dom;
+
+      const copy = PROFILE_COPY[dom];
+      $("rTitle").textContent = `Seu padrão dominante hoje é: ${copy.name}`;
+      $("rDesc").textContent = copy.desc;
+
+      const ul = document.createElement("ul");
+      copy.bullets.forEach(b => {
+        const li = document.createElement("li");
+        li.textContent = b;
+        ul.appendChild(li);
+      });
+
+      const bullets = $("rBullets");
+      bullets.innerHTML = "";
+      bullets.appendChild(ul);
+
+      hideError($("sendError"));
+    }
+
+    async function sendToBackend(){
+      // Se não tiver Apps Script ainda, a gente não trava o fluxo
+      if(!APPS_SCRIPT_WEBAPP_URL){
+        return { ok:true, mock:true };
+      }
+
+      const payload = {
+        source: "github_pages",
+        test: "Metodo Esfera — Diagnóstico Rápido",
+        lead: state.lead,
+        answers: state.answers,
+        scores: state.scores,
+        dominant: state.dominant,
+        createdAt: new Date().toISOString()
+      };
+
+      const res = await fetch(APPS_SCRIPT_WEBAPP_URL, {
+        method: "POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      // Apps Script às vezes retorna texto; tentamos JSON, senão texto.
+      const text = await res.text();
+      try{
+        return JSON.parse(text);
+      }catch(e){
+        return { ok: res.ok, raw:text };
+      }
+    }
+
+    // =========================
+    // EVENTS
+    // =========================
+    $("phone").addEventListener("input", (e) => {
+      const v = formatPhoneBR(e.target.value);
+      e.target.value = v;
+    });
+
+    $("startBtn").addEventListener("click", () => {
+      const name = $("name").value.trim();
+      const email = $("email").value.trim();
+      const phone = $("phone").value.trim();
+      const leadError = $("leadError");
+      hideError(leadError);
+
+      if(name.length < 2) return showError(leadError, "Coloca seu nome (rapidinho) pra eu te mandar o diagnóstico.");
+      if(!isValidEmail(email)) return showError(leadError, "Seu e-mail parece inválido. Confere e tenta de novo.");
+      const digits = normalizePhone(phone);
+      if(digits.length < 10) return showError(leadError, "Coloca um WhatsApp com DDD. Ex.: (11) 99999-9999");
+
+      state.lead = { name, email, phone };
+
+      showQuiz();
+    });
+
+    $("backBtn").addEventListener("click", () => {
+      hideError($("quizError"));
+      if(state.index > 0){
+        state.index--;
+        renderQuestion();
+      }
+    });
+
+    $("nextBtn").addEventListener("click", () => {
+      const err = $("quizError");
+      hideError(err);
+
+      if(!state.answers[state.index]){
+        return showError(err, "Escolhe uma opção pra continuar.");
+      }
+
+      if(state.index < QUESTIONS.length - 1){
+        state.index++;
+        renderQuestion();
+        return;
+      }
+
+      // finish
+      showResult();
+    });
+
+    $("restartBtn").addEventListener("click", () => {
+      // reset quiz only
+      state.index = 0;
+      state.answers = Array(QUESTIONS.length).fill(null);
+      state.scores = { REA:0, ANS:0, AVL:0, RIG:0 };
+      state.dominant = null;
+
+      $("leadBlock").style.display = "block";
+      $("quizBlock").style.display = "none";
+      $("resultBlock").style.display = "none";
+      $("name").focus();
+    });
+
+    $("sendBtn").addEventListener("click", async () => {
+      const btn = $("sendBtn");
+      const err = $("sendError");
+      hideError(err);
+
+      btn.disabled = true;
+      btn.textContent = "Enviando...";
+
+      try{
+        calcScores();
+        const dom = dominantProfile(state.scores);
+        state.dominant = dom;
+
+        const resp = await sendToBackend();
+
+        // Feedback simples
+        btn.textContent = "✅ Enviado!";
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.textContent = "📩 Enviar diagnóstico no e-mail";
+        }, 1800);
+
+        // Se ainda estiver mock, avisamos de leve
+        if(resp && resp.mock){
+          showError(err, "Obs.: backend ainda não está conectado. Assim que conectar, vai salvar lead + disparar e-mail automaticamente.");
+        }
+      }catch(ex){
+        showError(err, "Deu ruim ao enviar. Tenta de novo em alguns segundos.");
+        btn.disabled = false;
+        btn.textContent = "📩 Enviar diagnóstico no e-mail";
+      }
+    });
+  </script>
+</body>
+</html>
