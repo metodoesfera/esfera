@@ -605,35 +605,31 @@
     }
 
     async function sendToBackend(){
-      // Se não tiver Apps Script ainda, a gente não trava o fluxo
-      if(!APPS_SCRIPT_WEBAPP_URL){
-        return { ok:true, mock:true };
-      }
+  if(!APPS_SCRIPT_WEBAPP_URL){
+    return { ok:true, mock:true };
+  }
 
-      const payload = {
-        source: "github_pages",
-        test: "Metodo Esfera — Diagnóstico Rápido",
-        lead: state.lead,
-        answers: state.answers,
-        scores: state.scores,
-        dominant: state.dominant,
-        createdAt: new Date().toISOString()
-      };
+  const payload = {
+    source: "github_pages",
+    test: "Metodo Esfera — Diagnóstico Rápido",
+    lead: state.lead,
+    answers: state.answers,
+    scores: state.scores,
+    dominant: state.dominant,
+    createdAt: new Date().toISOString()
+  };
 
-      const res = await fetch(APPS_SCRIPT_WEBAPP_URL, {
-        method: "POST",
-        headers: { "Content-Type":"application/json" },
-        body: JSON.stringify(payload),
-      });
+  // ✅ Evita CORS: envia e não tenta ler resposta
+  await fetch(APPS_SCRIPT_WEBAPP_URL, {
+    method: "POST",
+    mode: "no-cors",
+    // não coloque headers aqui, pra não disparar preflight
+    body: JSON.stringify(payload)
+  });
 
-      // Apps Script às vezes retorna texto; tentamos JSON, senão texto.
-      const text = await res.text();
-      try{
-        return JSON.parse(text);
-      }catch(e){
-        return { ok: res.ok, raw:text };
-      }
-    }
+  // Se chegou aqui, consideramos ok (o servidor recebeu)
+  return { ok: true };
+}
 
     // =========================
     // EVENTS
