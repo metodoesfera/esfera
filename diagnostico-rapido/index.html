@@ -280,14 +280,32 @@
 <body>
   <div class="wrap">
     <div class="topbar">
-      <div class="badge">🧠 <strong style="color:#e5e7eb;font-weight:800;">Método Esfera</strong> <span>— Diagnóstico Rápido</span></div>
+      <div class="badge" style="gap:10px;">
+  <img
+    src="../assets/logo-esfera.png"
+    alt="Método Esfera"
+    style="width:18px;height:18px;border-radius:6px;object-fit:contain;"
+  />
+  <strong style="color:#e5e7eb;font-weight:800;">Método Esfera</strong>
+  <span>— Diagnóstico Rápido</span>
+</div>
       <div class="badge">⏱️ 2 min • 16 perguntas</div>
     </div>
 
     <div class="card">
       <div class="header">
-        <h1>Seu maior problema no trade não é a estratégia.<br/>É o jeito que seu cérebro reage ao mercado.</h1>
-        <p class="sub">Faça o teste rápido e descubra qual padrão neuroemocional mais sabota sua execução. Baseado em neurociência aplicada ao mercado.</p>
+        <h1 id="heroTitle">
+  Seu maior problema no trade não é a estratégia.
+  É o jeito que seu cérebro reage ao mercado.
+</h1>
+
+<p id="heroTitleResultSub" class="sub" style="display:none;">
+  Esse é o padrão neuroemocional que mais influencia sua execução no mercado hoje.
+</p>
+        <p class="sub" id="heroSub">
+  Faça o teste rápido e descubra qual padrão neuroemocional mais sabota sua execução.
+  Baseado em neurociência aplicada ao mercado.
+</p>
       </div>
 
       <div class="content">
@@ -569,6 +587,11 @@
     }
 
     function showQuiz(){
+      // restaura o título inicial
+      $("heroTitle").innerText =
+      "Seu maior problema no trade não é a estratégia. É o jeito que seu cérebro reage ao mercado.";
+      $("heroTitleResultSub").style.display = "none";
+      $("heroSub").style.display = "block";
       $("leadBlock").style.display = "none";
       $("quizBlock").style.display = "block";
       $("resultBlock").style.display = "none";
@@ -577,6 +600,10 @@
     }
 
     function showResult(){
+      // troca o título no resultado
+      $("heroTitle").innerText = "Seu diagnóstico está pronto.";
+      $("heroTitleResultSub").style.display = "block";
+      $("heroSub").style.display = "none";
       $("quizBlock").style.display = "none";
       $("resultBlock").style.display = "block";
 
@@ -689,6 +716,7 @@
       state.scores = { REA:0, ANS:0, AVL:0, RIG:0 };
       state.dominant = null;
 
+      $("heroSub").style.display = "block";
       $("leadBlock").style.display = "block";
       $("quizBlock").style.display = "none";
       $("resultBlock").style.display = "none";
