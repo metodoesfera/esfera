@@ -275,37 +275,60 @@
       color: rgba(34,197,94,.95);
       font-weight:800;
     }
+
+    /* ✅ AJUSTE: badge do logo (não quebra o .badge) */
+    .badge-brand{
+      gap:10px;
+    }
+
+    /* ✅ AJUSTE: logo maior */
+    .brand-logo{
+      width:36px;
+      height:36px;
+      border-radius:10px;
+      object-fit:contain;
+      background:rgba(255,255,255,.08);
+      padding:6px;
+    }
+
+    /* ✅ AJUSTE: título mais equilibrado */
+    #heroTitle{
+      font-size: clamp(26px, 3.6vw, 44px);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin: 8px 0 10px;
+      max-width: 24ch;
+      text-wrap: balance;
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="topbar">
-      <div class="badge" style="gap:10px;">
-  <img
-    src="../assets/logo-esfera.png"
-    alt="Método Esfera"
-    style="width:18px;height:18px;border-radius:6px;object-fit:contain;"
-  />
-  <strong style="color:#e5e7eb;font-weight:800;">Método Esfera</strong>
-  <span>— Diagnóstico Rápido</span>
-</div>
+      <!-- ✅ CORRIGIDO: removido HTML quebrado/duplicado -->
+      <div class="badge badge-brand">
+        <img class="brand-logo" src="../assets/logo-esfera.png" alt="Método Esfera" />
+        <strong>Método Esfera</strong>
+        <span>— Diagnóstico Rápido</span>
+      </div>
       <div class="badge">⏱️ 2 min • 16 perguntas</div>
     </div>
 
     <div class="card">
       <div class="header">
         <h1 id="heroTitle">
-  Seu maior problema no trade não é a estratégia.
-  É o jeito que seu cérebro reage ao mercado.
-</h1>
+          Seu maior problema no trade não é a estratégia.
+          É o jeito que seu cérebro reage ao mercado.
+        </h1>
 
-<p id="heroTitleResultSub" class="sub" style="display:none;">
-  Esse é o padrão neuroemocional que mais influencia sua execução no mercado hoje.
-</p>
+        <p id="heroTitleResultSub" class="sub" style="display:none;">
+          Esse é o padrão neuroemocional que mais influencia sua execução no mercado hoje.
+        </p>
+
         <p class="sub" id="heroSub">
-  Faça o teste rápido e descubra qual padrão neuroemocional mais sabota sua execução.
-  Baseado em neurociência aplicada ao mercado.
-</p>
+          Faça o teste rápido e descubra qual padrão neuroemocional mais sabota sua execução.
+          Baseado em neurociência aplicada ao mercado.
+        </p>
       </div>
 
       <div class="content">
@@ -592,6 +615,7 @@
       "Seu maior problema no trade não é a estratégia. É o jeito que seu cérebro reage ao mercado.";
       $("heroTitleResultSub").style.display = "none";
       $("heroSub").style.display = "block";
+
       $("leadBlock").style.display = "none";
       $("quizBlock").style.display = "block";
       $("resultBlock").style.display = "none";
@@ -604,6 +628,7 @@
       $("heroTitle").innerText = "Seu diagnóstico está pronto.";
       $("heroTitleResultSub").style.display = "block";
       $("heroSub").style.display = "none";
+
       $("quizBlock").style.display = "none";
       $("resultBlock").style.display = "block";
 
@@ -632,31 +657,29 @@
     }
 
     async function sendToBackend(){
-  if(!APPS_SCRIPT_WEBAPP_URL){
-    return { ok:true, mock:true };
-  }
+      if(!APPS_SCRIPT_WEBAPP_URL){
+        return { ok:true, mock:true };
+      }
 
-  const payload = {
-    source: "github_pages",
-    test: "Metodo Esfera — Diagnóstico Rápido",
-    lead: state.lead,
-    answers: state.answers,
-    scores: state.scores,
-    dominant: state.dominant,
-    createdAt: new Date().toISOString()
-  };
+      const payload = {
+        source: "github_pages",
+        test: "Metodo Esfera — Diagnóstico Rápido",
+        lead: state.lead,
+        answers: state.answers,
+        scores: state.scores,
+        dominant: state.dominant,
+        createdAt: new Date().toISOString()
+      };
 
-  // ✅ Evita CORS: envia e não tenta ler resposta
-  await fetch(APPS_SCRIPT_WEBAPP_URL, {
-    method: "POST",
-    mode: "no-cors",
-    // não coloque headers aqui, pra não disparar preflight
-    body: JSON.stringify(payload)
-  });
+      // ✅ Evita CORS: envia e não tenta ler resposta
+      await fetch(APPS_SCRIPT_WEBAPP_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify(payload)
+      });
 
-  // Se chegou aqui, consideramos ok (o servidor recebeu)
-  return { ok: true };
-}
+      return { ok: true };
+    }
 
     // =========================
     // EVENTS
@@ -716,7 +739,12 @@
       state.scores = { REA:0, ANS:0, AVL:0, RIG:0 };
       state.dominant = null;
 
+      // ✅ restaura título/subtítulo ao voltar pro início
+      $("heroTitle").innerText =
+        "Seu maior problema no trade não é a estratégia. É o jeito que seu cérebro reage ao mercado.";
+      $("heroTitleResultSub").style.display = "none";
       $("heroSub").style.display = "block";
+
       $("leadBlock").style.display = "block";
       $("quizBlock").style.display = "none";
       $("resultBlock").style.display = "none";
@@ -738,14 +766,12 @@
 
         const resp = await sendToBackend();
 
-        // Feedback simples
         btn.textContent = "✅ Enviado!";
         setTimeout(() => {
           btn.disabled = false;
           btn.textContent = "📩 Enviar diagnóstico no e-mail";
         }, 1800);
 
-        // Se ainda estiver mock, avisamos de leve
         if(resp && resp.mock){
           showError(err, "Obs.: backend ainda não está conectado. Assim que conectar, vai salvar lead + disparar e-mail automaticamente.");
         }
