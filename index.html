@@ -1,1058 +1,779 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ESFERA™ — Diagnóstico ESFERA™</title>
-  <meta name="description" content="Ferramenta digital do Método ESFERA™ — avaliação dimensional da mente do trader." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Chart.js (sem integrity para não bloquear) -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
-
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Método Esfera — Diagnóstico Rápido</title>
+  <meta name="description" content="Teste rápido baseado em neurociência aplicada ao mercado para identificar seu padrão neuroemocional no trade." />
   <style>
     :root{
-      --bg:#18243a;
-      --card:#111522;
-      --card2:#0f1320;
-      --text:#e9ecf1;
-      --muted:#aab3c2;
-      --line:#22304a;
-      --accent:#5b6cff;
-      --accent2:#3ccf91;
-      --warn:#ffb020;
-      --danger:#ff4d4f;
+      --bg:#0b0f14;
+      --card:#111827;
+      --muted:#9ca3af;
+      --text:#f9fafb;
+      --line:#1f2937;
+      --accent:#22c55e;
+      --accent2:#60a5fa;
+      --danger:#f97316;
       --radius:18px;
-      --shadow:0 20px 60px rgba(0,0,0,.45);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
     }
-
     *{box-sizing:border-box}
-
     body{
       margin:0;
-      font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
-      background:
-        radial-gradient(1200px 700px at 18% 12%, rgba(124,92,255,.12), transparent 70%),
-        radial-gradient(1000px 650px at 82% 18%, rgba(25,195,125,.08), transparent 72%),
-        radial-gradient(900px 700px at 50% 95%, rgba(255,255,255,.04), transparent 70%),
-        var(--bg);
-      color:var(--text)
-    }
-
-    a{color:inherit}
-    .wrap{max-width:1080px;margin:0 auto;padding:32px 18px 80px}
-
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-bottom:18px;
-      padding: 6px 10px;
-      border-radius: 18px;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      backdrop-filter: blur(6px);
-    }
-
-    .brand{display:flex;align-items:center;gap:12px}
-    .brand h1{font-size:16px;margin:0}
-    .brand img{
-      height: 22px;
-      width: auto;
-      display: block;
-      filter: brightness(0) invert(1);
-      opacity: .95;
-    }
-
-    .pill{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:7px 10px;border-radius:999px;background:rgba(17,21,34,.55)}
-
-    .grid{display:grid;grid-template-columns: 1.1fr .9fr;gap:18px}
-    @media (max-width: 980px){.grid{grid-template-columns:1fr}}
-
-    .card{background:linear-gradient(180deg, rgba(17,21,34,.85), rgba(17,21,34,.65));border:1px solid rgba(34,48,74,.9);border-radius:var(--radius);box-shadow:var(--shadow)}
-    .card .inner{padding:18px}
-    .hero{padding:22px 22px 18px}
-
-    .hero h2{
-      margin:0 0 10px;
-      font-size:24px;
-      letter-spacing:-.01em;
-      line-height:1.25;
-    }
-
-    .hero p{
-      margin:0 0 16px;
-      color:var(--muted);
-      line-height:1.6;
-      font-size:14px;
-      max-width: 90%;
-    }
-
-    .hero .bullets{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-    @media (max-width: 520px){.hero .bullets{grid-template-columns:1fr}}
-    .b{padding:12px;border:1px solid rgba(34,48,74,.9);border-radius:16px;background:rgba(15,19,32,.65)}
-    .b .t{font-weight:700;font-size:13px;margin-bottom:4px}
-    .b .d{font-size:12px;color:var(--muted);line-height:1.4}
-
-    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
-    .btn{appearance:none;border:none;border-radius:14px;padding:12px 14px;font-weight:700;cursor:pointer;transition:.18s transform,.18s opacity,.18s filter;display:inline-flex;align-items:center;gap:10px}
-    .btn:active{transform:translateY(1px)}
-    .btn.primary{background:linear-gradient(135deg,var(--accent),#3dd6ff);color:#0b0d12}
-    .btn.ghost{background:rgba(15,19,32,.6);border:1px solid rgba(34,48,74,.9);color:var(--text)}
-    .btn.danger{background:rgba(255,77,79,.12);border:1px solid rgba(255,77,79,.35);color:var(--text)}
-    .btn:disabled{opacity:.55;cursor:not-allowed;filter:grayscale(.2)}
-
-    .formRow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-    @media (max-width: 520px){.formRow{grid-template-columns:1fr}}
-    label{font-size:12px;color:var(--muted);display:block;margin:0 0 6px}
-    input,select{width:100%;padding:12px 12px;border-radius:14px;background:rgba(15,19,32,.7);border:1px solid rgba(34,48,74,.9);color:var(--text);outline:none}
-    input:focus,select:focus{border-color:rgba(124,92,255,.7);box-shadow:0 0 0 4px rgba(124,92,255,.12)}
-
-    .sectionTitle{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px}
-    .sectionTitle h3{margin:0;font-size:14px}
-    .hint{font-size:12px;color:var(--muted)}
-
-    .qWrap{display:flex;flex-direction:column;gap:10px}
-    .q{padding:14px;border-radius:16px;background:rgba(15,19,32,.6);border:1px solid rgba(34,48,74,.85)}
-    .qTop{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
-    .qIdx{font-size:12px;color:var(--muted);min-width:44px}
-    .qText{font-size:13px;line-height:1.45}
-    .scale{display:grid;grid-template-columns: repeat(5, 1fr);gap:8px;margin-top:10px}
-    .opt{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 10px;border-radius:14px;border:1px solid rgba(34,48,74,.85);background:rgba(17,21,34,.55);cursor:pointer;user-select:none;font-size:12px}
-    .opt input{display:none}
-    .opt.sel{border-color:rgba(124,92,255,.8);box-shadow:0 0 0 4px rgba(124,92,255,.12)}
-
-    .progress{height:10px;border-radius:999px;background:rgba(34,48,74,.5);overflow:hidden}
-    .progress>div{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#3dd6ff)}
-
-    .badge{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(34,48,74,.9);background:rgba(15,19,32,.65);padding:8px 10px;border-radius:999px;font-size:12px;color:var(--muted)}
-    .kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    @media (max-width:520px){.kpi{grid-template-columns:1fr}}
-    .k{padding:14px;border-radius:16px;border:1px solid rgba(34,48,74,.85);background:rgba(15,19,32,.6)}
-    .k .v{font-size:24px;font-weight:800}
-    .k .l{font-size:12px;color:var(--muted)}
-
-    .muted{color:var(--muted)}
-    .small{font-size:12px}
-    .divider{height:1px;background:rgba(34,48,74,.8);margin:14px 0}
-
-    .toast{
-      position:fixed;
-      left:50%;
-      transform:translateX(-50%);
-      bottom:18px;
-      background:rgba(17,21,34,.95);
-      border:1px solid rgba(34,48,74,.9);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 700px at 20% 10%, rgba(96,165,250,.14), transparent 55%),
+                  radial-gradient(900px 600px at 80% 30%, rgba(34,197,94,.10), transparent 50%),
+                  var(--bg);
       color:var(--text);
-      padding:10px 12px;
-      border-radius:14px;
-      box-shadow:var(--shadow);
-      opacity:0;
-      pointer-events:none;
-      transition:.18s opacity;
-      z-index:999999;
-    }
-    .toast.show{opacity:1}
-
-    .logo-img{
-      height: 140px !important;
-      width: auto !important;
-      display: block;
-      filter: brightness(0) invert(1) drop-shadow(0 12px 32px rgba(0,0,0,.55));
-    }
-
-    @media (max-width: 720px){
-      .wrap{ padding: 18px 14px calc(32px + env(safe-area-inset-bottom)) !important; }
-      .topbar{ flex-direction: column; align-items: stretch; gap: 10px; padding: 12px; }
-      .brand{ flex-direction: column; align-items: center; text-align: center; gap: 10px; }
-      .logo-img{ height: 72px !important; }
-      .brand h1{ font-size: 15px; line-height: 1.2; }
-      .pill{ width: fit-content; margin: 0 auto; }
-      #btnReset{ width: 100%; justify-content: center; border-radius: 16px; }
-      .hero{ padding: 18px 16px 16px; }
-      .hero h2{ font-size: 22px; line-height: 1.2; }
-      .hero p{ max-width: 100%; font-size: 13px; line-height: 1.55; }
-      .formRow{ grid-template-columns: 1fr !important; gap: 10px; }
-      .actions{ gap: 10px; }
-      .actions .btn{ width: 100%; justify-content: center; padding: 14px 14px; border-radius: 16px; }
-      .hero .bullets{ grid-template-columns: 1fr !important; gap: 10px; }
-      .mobileGuide{
-        margin: 12px 0 6px; padding: 12px; border: 1px solid rgba(34,48,74,.85);
-        border-radius: 16px; background: rgba(15,19,32,.55);
-      }
-      .mobileGuide .title{ font-weight: 800; margin-bottom: 6px; font-size: 13px; }
-      .mobileGuide .txt{ color: var(--muted); font-size: 12px; line-height: 1.55; }
-      .guideDesktop{ display: none !important; }
-    }
-    @media (min-width: 721px){
-      .mobileGuide{ display:none; }
-    }
-
-    /* Overlay do gate (por cima, sem apagar seu HTML) */
-    #gateOverlay{
-      position:fixed;
-      inset:0;
+      min-height:100vh;
       display:flex;
       align-items:center;
       justify-content:center;
       padding:24px;
-      z-index:9999999;
-      background:
-        radial-gradient(1200px 700px at 18% 12%, rgba(124,92,255,.12), transparent 70%),
-        radial-gradient(1000px 650px at 82% 18%, rgba(25,195,125,.08), transparent 72%),
-        radial-gradient(900px 700px at 50% 95%, rgba(255,255,255,.04), transparent 70%),
-        #18243a;
     }
-    #gateOverlay .box{
-      max-width:520px;width:100%;
-      background:rgba(17,21,34,.75);
-      border:1px solid rgba(34,48,74,.9);
-      border-radius:18px;
-      box-shadow:0 20px 60px rgba(0,0,0,.45);
-      padding:18px;
-      text-align:center;
+    a{color:inherit}
+    .wrap{
+      width:min(760px, 100%);
     }
-    #gateOverlay .t{font-weight:800;font-size:16px;margin-bottom:8px;color:#e9ecf1}
-    #gateOverlay .m{color:#aab3c2;font-size:13px;line-height:1.6}
-    #gateOverlay .h{margin-top:14px;font-size:12px;color:#aab3c2}
+    .topbar{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:14px;
+      opacity:.95;
+    }
+    .badge{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 12px;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:999px;
+      background: rgba(17,24,39,.6);
+      backdrop-filter: blur(10px);
+      font-size:13px;
+      color:var(--muted);
+    }
+    .card{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(17,24,39,.72);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .header{
+      padding:22px 22px 0;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size: clamp(22px, 3.4vw, 34px);
+      line-height:1.1;
+      letter-spacing:-.02em;
+    }
+    .sub{
+      margin:0;
+      color:var(--muted);
+      line-height:1.5;
+      font-size: 15px;
+    }
+    .content{
+      padding:18px 22px 22px;
+    }
+    .grid{
+      display:grid;
+      gap:14px;
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 720px){
+      .grid{grid-template-columns:1fr;}
+    }
+    label{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    input{
+      width:100%;
+      padding:12px 12px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(11,15,20,.55);
+      color:var(--text);
+      outline:none;
+      font-size:15px;
+    }
+    input:focus{
+      border-color: rgba(96,165,250,.55);
+      box-shadow: 0 0 0 3px rgba(96,165,250,.18);
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .btn{
+      cursor:pointer;
+      border:none;
+      border-radius: 14px;
+      padding:12px 14px;
+      font-weight:700;
+      font-size:15px;
+      color:#06110b;
+      background: linear-gradient(135deg, rgba(34,197,94,1), rgba(16,185,129,1));
+      box-shadow: 0 10px 20px rgba(34,197,94,.18);
+    }
+    .btn.secondary{
+      color:var(--text);
+      background: rgba(11,15,20,.35);
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:none;
+      font-weight:650;
+    }
+    .btn:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+    }
+    .divider{
+      height:1px;
+      background: rgba(255,255,255,.10);
+      margin:18px 0;
+    }
+    .quiz{
+      padding:16px;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: 16px;
+      background: rgba(11,15,20,.25);
+    }
+    .progress{
+      height:10px;
+      width:100%;
+      background: rgba(255,255,255,.08);
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(96,165,250,1), rgba(34,197,94,1));
+      border-radius:999px;
+      transition: width .25s ease;
+    }
+    .qmeta{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .qtitle{
+      margin:14px 0 10px;
+      font-size:18px;
+      line-height:1.35;
+      letter-spacing:-.01em;
+    }
+    .choices{
+      display:grid;
+      gap:10px;
+    }
+    .choice{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      padding:12px 12px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      background: rgba(17,24,39,.35);
+      cursor:pointer;
+      transition: transform .05s ease, border-color .15s ease, background .15s ease;
+    }
+    .choice:hover{
+      border-color: rgba(96,165,250,.45);
+      background: rgba(96,165,250,.10);
+    }
+    .choice input{
+      width:auto;
+      margin-top:2px;
+    }
+    .choice .t{
+      font-size:14px;
+      color:var(--text);
+      line-height:1.35;
+    }
+    .hint{
+      margin:10px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+    .error{
+      color: #fecaca;
+      background: rgba(248,113,113,.12);
+      border:1px solid rgba(248,113,113,.25);
+      padding:10px 12px;
+      border-radius: 14px;
+      margin-top:12px;
+      display:none;
+      font-size:14px;
+    }
+    .result{
+      display:none;
+      padding:16px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(11,15,20,.25);
+    }
+    .pill{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(17,24,39,.35);
+      color:var(--muted);
+      font-size:13px;
+    }
+    .rtitle{
+      margin:10px 0 6px;
+      font-size:22px;
+      letter-spacing:-.02em;
+      line-height:1.2;
+    }
+    .rdesc{
+      margin:0 0 12px;
+      color:var(--muted);
+      line-height:1.55;
+      font-size:15px;
+    }
+    ul{
+      margin:0;
+      padding-left:18px;
+      color:var(--text);
+    }
+    li{margin:6px 0; color:rgba(249,250,251,.92)}
+    .foot{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.5;
+      opacity:.95;
+    }
+    .tiny{
+      font-size:12px;
+      color:var(--muted);
+    }
+    .tag{
+      color: rgba(34,197,94,.95);
+      font-weight:800;
+    }
+    .badge-brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:10px 14px;
+    }
+
+   .brand-logo{
+      width:28px;
+      height:28px;
+      border-radius:8px;
+      object-fit:contain;
+      background:rgba(255,255,255,.06);
+      padding:4px;
+    }
+    #heroTitle{
+      font-size: clamp(28px, 4.2vw, 54px);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin: 6px 0 10px;
+      max-width: 18ch; /* deixa o título mais “bonito” em linhas */
+    }
   </style>
 </head>
-
 <body>
   <div class="wrap">
     <div class="topbar">
-      <div class="brand">
-        <img src="assets/logo-esfera.png" alt="Método ESFERA" class="logo-img">
-        <div>
-          <h1>ESFERA™ — Diagnóstico ESFERA™</h1>
-          <div class="pill">Ferramenta digital • Landing + Teste + Resultado</div>
-        </div>
-      </div>
-      <button id="btnReset" class="btn ghost" type="button" title="Limpar respostas">Reiniciar</button>
+      <div class="badge badge-brand">
+  <img class="brand-logo" src="../assets/logo-esfera.png" alt="Método Esfera" />
+  <strong>Método Esfera</strong>
+  <span>— Diagnóstico Rápido</span>
+</div>>— Diagnóstico Rápido</span>
+</div>
+      <div class="badge">⏱️ 2 min • 16 perguntas</div>
     </div>
 
-    <div id="viewLanding" class="grid">
-      <div class="card">
-        <div class="hero">
-          <h2>Diagnóstico mental do trader sob risco</h2>
-          <p>Descubra como sua mente reage quando o dinheiro está em jogo.</p>
+    <div class="card">
+      <div class="header">
+        <h1 id="heroTitle">
+  Seu maior problema no trade não é a estratégia.
+  É o jeito que seu cérebro reage ao mercado.
+</h1>
 
-          <div class="formRow">
+<p id="heroTitleResultSub" class="sub" style="display:none;">
+  Esse é o padrão neuroemocional que mais influencia sua execução no mercado hoje.
+</p>
+        <p class="sub" id="heroSub">
+  Faça o teste rápido e descubra qual padrão neuroemocional mais sabota sua execução.
+  Baseado em neurociência aplicada ao mercado.
+</p>
+      </div>
+
+      <div class="content">
+        <!-- LEAD FORM -->
+        <div id="leadBlock">
+          <div class="grid">
             <div>
-              <label for="name">Nome</label>
-              <input id="name" placeholder="Ex.: John" autocomplete="name" />
+              <label for="name">Seu nome</label>
+              <input id="name" autocomplete="name" placeholder="Ex.: João" />
             </div>
             <div>
-              <label for="email">Email</label>
-              <input id="email" placeholder="voce@exemplo.com" autocomplete="email" />
+              <label for="email">Seu e-mail</label>
+              <input id="email" autocomplete="email" inputmode="email" placeholder="voce@exemplo.com" />
             </div>
             <div>
-              <label for="market">Tipos de operações</label>
-              <select id="market">
-                <option value="Day Trade">Day Trade</option>
-                <option value="Swing Trade">Swing Trade</option>
-                <option value="Position Trade">Position Trade</option>
-              </select>
+              <label for="phone">Seu telefone (WhatsApp)</label>
+              <input id="phone" autocomplete="tel" inputmode="tel" placeholder="(11) 99999-9999" />
+              <div class="tiny" style="margin-top:6px;">A gente usa só pra contato do conteúdo/mentoria. Nada de spam absurdo.</div>
             </div>
-            <div>
-              <label for="experience">Experiência</label>
-              <select id="experience">
-                <option value="Iniciante">Iniciante</option>
-                <option value="Intermediário">Intermediário</option>
-                <option value="Avançado">Avançado</option>
-              </select>
+            <div style="display:flex;align-items:flex-end;">
+              <button class="btn" id="startBtn">👉 Começar o diagnóstico</button>
             </div>
           </div>
 
-          <div class="mobileGuide">
-            <div class="title">Como responder (últimos 7 dias)</div>
-            <div class="txt">
-              Responda como você <b>agiu</b> nos últimos 7 dias sob risco — não como gostaria de agir.<br>
-              Escala: <b>1</b> Nunca, <b>2</b> Raramente, <b>3</b> Às vezes, <b>4</b> Frequentemente, <b>5</b> Sempre.
+          <div class="error" id="leadError"></div>
+
+          <div class="divider"></div>
+          <div class="row">
+            <div class="tiny">
+              <span class="tag">Sem promessa vazia.</span> É diagnóstico, não “motivação”.
             </div>
-          </div>
-
-          <div class="actions">
-            <button id="btnStart" class="btn primary" type="button">Começar meu diagnóstico</button>
-            <button id="btnLoad" class="btn ghost" type="button">Continuar (se houver)</button>
-          </div>
-
-          <p class="small muted" style="margin-top:8px">
-            ⏱ Leva cerca de 4–6 minutos • Responda como você agiu nos últimos 7 dias sob risco.
-          </p>
-
-          <div class="hero bullets">
-            <div class="b"><div class="t">4 Dimensões</div><div class="d">Controle, Risco, Autonomia e Aprendizado.</div></div>
-            <div class="b"><div class="t">64 Perguntas</div><div class="d">Escala 1–5, leitura clara e aplicável.</div></div>
-            <div class="b"><div class="t">Radar ESFERA™</div><div class="d">Visual do equilíbrio mental do trader.</div></div>
-            <div class="b"><div class="t">Devolutiva oficial</div><div class="d">Leitura do gráfico + direção de evolução.</div></div>
+            <div class="tiny">Ao continuar, você concorda com o uso dos seus dados para envio do diagnóstico e conteúdos do Método Esfera.</div>
           </div>
         </div>
-      </div>
 
-      <div class="card guideDesktop">
-        <div class="inner">
-          <div class="sectionTitle"><h3>Como responder</h3></div>
-          <p class="small muted">
-            Responda de forma espontânea. Use a escala:
-            <b>1</b> Nunca, <b>2</b> Raramente, <b>3</b> Às vezes, <b>4</b> Frequentemente, <b>5</b> Sempre.
-          </p>
-          <div class="divider"></div>
-          <div class="sectionTitle"><h3>O que você vai receber</h3></div>
-          <ul class="small muted" style="margin:0 0 10px 16px; line-height:1.6">
-            <li>Pontuação por dimensão (0–80)</li>
-            <li>Gráfico radar ESFERA™</li>
-            <li>Nível interpretativo por dimensão</li>
-            <li>Devolutiva oficial do método</li>
-          </ul>
-          <div class="divider"></div>
-          <div class="badge">⚠️ ESFERA™ não é terapia e não promete resultados financeiros.</div>
-        </div>
-      </div>
-    </div>
+        <!-- QUIZ -->
+        <div class="quiz" id="quizBlock" style="display:none;">
+          <div class="progress" aria-label="Progresso do teste"><div class="bar" id="bar"></div></div>
+          <div class="qmeta">
+            <div id="qCount">Pergunta 1 de 16</div>
+            <div class="pill">Responda sem pensar demais.</div>
+          </div>
 
-    <div id="viewTest" style="display:none" class="grid">
-      <div class="card">
-        <div class="inner">
-          <div class="sectionTitle">
-            <h3>Questionário (64 itens)</h3>
-            <div class="hint"><span id="progressText">0/64</span></div>
-          </div>
-          <div class="progress" aria-label="Progresso"><div id="progressBar"></div></div>
-          <div class="divider"></div>
-          <div id="questions" class="qWrap"></div>
-          <div class="divider"></div>
-          <div class="actions">
-            <button id="btnSubmit" class="btn primary" type="button" disabled>Ver resultado</button>
-            <button id="btnSave" class="btn ghost" type="button">Salvar e sair</button>
-            <button id="btnBack" class="btn ghost" type="button">Voltar</button>
-          </div>
-          <p class="small muted" style="margin-top:12px">Dica: você pode salvar e continuar depois (fica no seu navegador).</p>
-        </div>
-      </div>
-      <div class="card">
-        <div class="inner">
-          <div class="sectionTitle"><h3>Legenda da escala</h3></div>
-          <div class="small muted" style="line-height:1.7">
-            1 = Nunca / Discordo totalmente<br>
-            2 = Raramente<br>
-            3 = Às vezes<br>
-            4 = Frequentemente<br>
-            5 = Sempre / Concordo totalmente
-          </div>
-          <div class="divider"></div>
-          <div class="sectionTitle"><h3>Dimensões</h3></div>
-          <div class="small muted" style="line-height:1.7">
-            <b>Controle Inibitório</b>: freio antes do clique.<br>
-            <b>Gestão do Risco</b>: relação emocional com perda e exposição.<br>
-            <b>Autonomia Decisional</b>: autoria e responsabilidade.<br>
-            <b>Aprendizado Adaptativo</b>: evolução contínua por feedback.
-          </div>
-        </div>
-      </div>
-    </div>
+          <div class="qtitle" id="qText"></div>
 
-    <div id="viewResult" style="display:none" class="grid">
-      <div class="card">
-        <div class="inner">
-          <div class="sectionTitle"><h3>Resultado ESFERA™</h3><div class="hint" id="who"></div></div>
-          <div class="badge" id="meta"></div>
-          <div class="divider"></div>
-          <canvas id="radar" height="220"></canvas>
-          <div class="divider"></div>
-          <div class="kpi">
-            <div class="k"><div class="v" id="s1">0</div><div class="l">Controle Inibitório (0–80)</div></div>
-            <div class="k"><div class="v" id="s2">0</div><div class="l">Gestão do Risco (0–80)</div></div>
-            <div class="k"><div class="v" id="s3">0</div><div class="l">Autonomia Decisional (0–80)</div></div>
-            <div class="k"><div class="v" id="s4">0</div><div class="l">Aprendizado Adaptativo (0–80)</div></div>
-          </div>
-          <div class="divider"></div>
-          <div class="actions">
-            <button id="btnPrint" class="btn ghost" type="button">Imprimir / Salvar PDF</button>
-            <button id="btnRestart" class="btn ghost" type="button">Refazer teste</button>
-            <button id="btnClear" class="btn danger" type="button">Apagar dados</button>
-          </div>
-        </div>
-      </div>
+          <div class="choices" id="choices"></div>
 
-      <div class="card">
-        <div class="inner">
-          <div class="sectionTitle"><h3>Devolutiva oficial</h3></div>
-          <div id="devolutiva" class="small" style="line-height:1.65"></div>
+          <div class="row" style="margin-top:14px;">
+            <button class="btn secondary" id="backBtn">⬅️ Voltar</button>
+            <button class="btn" id="nextBtn" disabled>Próxima ➜</button>
+          </div>
+
+          <div class="error" id="quizError"></div>
+          <p class="hint">Dica: o mercado não quer sua opinião. Ele quer seu padrão. Responde no automático mesmo.</p>
+        </div>
+
+        <!-- RESULT -->
+        <div class="result" id="resultBlock">
+          <div class="pill">✅ Diagnóstico gerado</div>
+          <div class="rtitle" id="rTitle"></div>
+          <p class="rdesc" id="rDesc"></p>
+          <div id="rBullets"></div>
+
+          <div class="divider"></div>
+
+          <div class="row">
+            <button class="btn secondary" id="restartBtn">Refazer teste</button>
+            <button class="btn" id="sendBtn">📩 Enviar diagnóstico no e-mail</button>
+          </div>
+
+          <div class="error" id="sendError"></div>
+
+          <div class="foot">
+            O teste de 16 perguntas é um rastreio inicial. Ele mostra <strong>qual padrão está mais ativo hoje</strong>, mas não aprofunda origem e reprogramação completa.
+            O próximo passo (diagnóstico completo) é onde a gente destrincha isso de verdade.
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script>
+    // =========================
+    // CONFIG
+    // =========================
+    const APPS_SCRIPT_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwWbLUImALg8tERWfJfNCSPmgJPh4ZBZiNk7po2elW0nUU8mycJv2B6np2FFpeSAVvY/exec?action=lead";
 
-<script>
-  // ============================
-  // URL do Web App (Apps Script)
-  // ============================
-  const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwWbLUImALg8tERWfJfNCSPmgJPh4ZBZiNk7po2elW0nUU8mycJv2B6np2FFpeSAVvY/exec";
+    // Perfis:
+    // REA = Reatividade Emocional
+    // ANS = Ansiedade Antecipatória
+    // AVL = Aversão à Perda
+    // RIG = Rigidez Cognitiva
 
-  // ============================
-  // GATE (proteção por sessão)
-  // ============================
-  const ENTRY_WEBAPP_URL = WEBAPP_URL; // Entrada do Apps Script
-  const AUTH_STORAGE_KEY = "esfera_auth_v1";
+    const QUESTIONS = [
+      // REA (1-4)
+      { key:"REA", text:"Eu entro em operações mesmo sabendo que o setup não está 100% fechado." },
+      { key:"REA", text:"Quando perco uma operação, sinto vontade de recuperar rapidamente." },
+      { key:"REA", text:"Já cliquei em comprar/vender no impulso e me arrependi logo depois." },
+      { key:"REA", text:"Mudanças rápidas no preço mexem muito comigo." },
 
-  function getQueryParam(name) {
-    try { return new URLSearchParams(window.location.search).get(name) || ""; }
-    catch { return ""; }
-  }
+      // ANS (5-8)
+      { key:"ANS", text:"Eu evito entrar em boas operações por medo de errar." },
+      { key:"ANS", text:"Eu penso demais no que pode dar errado e travo." },
+      { key:"ANS", text:"Sinto tensão física (peito/respiração) antes de clicar pra entrar." },
+      { key:"ANS", text:"Eu prefiro não operar do que correr o risco de perder." },
 
-  function ensureGateOverlay(){
-    let el = document.getElementById("gateOverlay");
-    if (el) return el;
+      // AVL (9-12)
+      { key:"AVL", text:"Tenho dificuldade de aceitar stop e fico tentando “dar espaço” demais." },
+      { key:"AVL", text:"Eu saio cedo demais quando tô ganhando, com medo de devolver." },
+      { key:"AVL", text:"Perder dói mais do que ganhar dá prazer." },
+      { key:"AVL", text:"Às vezes eu altero o plano só pra evitar fechar no prejuízo." },
 
-    el = document.createElement("div");
-    el.id = "gateOverlay";
-    el.innerHTML = `
-      <div class="box">
-        <div class="t">ESFERA™</div>
-        <div class="m" id="gateMsg">Validando acesso…</div>
-        <div class="h" id="gateHint">Se isso demorar, verifique sua conexão.</div>
-      </div>
-    `;
-    document.body.appendChild(el);
-    return el;
-  }
-
-  function setGateMessage(msg){
-    const overlay = ensureGateOverlay();
-    const m = overlay.querySelector("#gateMsg");
-    if (m) m.textContent = msg || "Validando acesso…";
-  }
-
-  function hideGateOverlay(){
-    const el = document.getElementById("gateOverlay");
-    if (el) el.remove();
-  }
-
-  function jsonpValidateSession(sessionKey, email, timeoutMs = 12000) {
-    return new Promise((resolve) => {
-      const cb = "cb_esfera_" + Math.random().toString(36).slice(2);
-      const script = document.createElement("script");
-
-      const timer = setTimeout(() => {
-        try { delete window[cb]; } catch {}
-        script.remove();
-        resolve({ ok:false, code:"TIMEOUT", message:"Tempo limite ao validar sessão." });
-      }, timeoutMs);
-
-      window[cb] = function (res) {
-        clearTimeout(timer);
-        try { delete window[cb]; } catch {}
-        script.remove();
-        resolve(res);
-      };
-
-      const url = ENTRY_WEBAPP_URL
-        + "?action=validateSession"
-        + "&s=" + encodeURIComponent(sessionKey || "")
-        + "&e=" + encodeURIComponent((email || "").toLowerCase())
-        + "&callback=" + encodeURIComponent(cb);
-
-      script.src = url;
-
-      script.onerror = function () {
-        clearTimeout(timer);
-        try { delete window[cb]; } catch {}
-        script.remove();
-        resolve({ ok: false, code: "NETWORK", message: "Falha de rede ao validar sessão." });
-      };
-
-      document.head.appendChild(script);
-    });
-  }
-
-  async function enforceGateOrRedirect() {
-    // 1) pega da URL
-    let s = getQueryParam("s");
-    let e = getQueryParam("e");
-
-    // 2) fallback: storage (reload)
-    if (!s || !e) {
-      try {
-        const saved = JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || "null");
-        if (saved && saved.s && saved.e) {
-          s = s || saved.s;
-          e = e || saved.e;
-        }
-      } catch {}
-    }
-
-    // 3) sem sessão => manda pro login
-    if (!s || !e) {
-      setGateMessage("Acesso protegido. Redirecionando para login…");
-      window.location.href = ENTRY_WEBAPP_URL + "?page=entrada";
-      return false;
-    }
-
-    // 4) mostra overlay e valida
-    setGateMessage("Validando seu acesso…");
-    const res = await jsonpValidateSession(s, e);
-
-    if (!res || !res.ok) {
-      setGateMessage("Sessão inválida ou expirada. Redirecionando para login…");
-      try { localStorage.removeItem(AUTH_STORAGE_KEY); } catch {}
-      setTimeout(() => {
-        window.location.href = ENTRY_WEBAPP_URL + "?page=entrada";
-      }, 500);
-      return false;
-    }
-
-    // 5) sessão ok => salva e remove overlay
-    try {
-      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ s, e, validatedAt: new Date().toISOString() }));
-    } catch {}
-
-    hideGateOverlay();
-    return true;
-  }
-
-  const QUESTIONS = [
-    "Quando identifico uma possível entrada, consigo esperar a confirmação completa do meu plano.",
-    "Mesmo vendo o preço se mover rápido, evito entrar sem checklist mental claro.",
-    "Consigo observar o mercado sem sentir necessidade imediata de agir.",
-    "Quando sinto impulso de entrar, faço uma pausa consciente antes de clicar.",
-    "Consigo manter clareza mental após uma sequência de perdas.",
-    "Evito aumentar risco quando estou eufórico após ganhos consecutivos.",
-    "Minha emoção raramente dita o momento da entrada ou saída.",
-    "Consigo identificar quando estou emocionalmente instável antes de operar.",
-    "Sigo minhas regras mesmo quando o mercado parece \"imperdível\".",
-    "Evito ajustar stops ou alvos por desconforto emocional.",
-    "Tenho critérios claros independentemente do trade anterior.",
-    "Prefiro perder uma oportunidade do que violar meu plano.",
-    "Consigo ficar fora do mercado sem ansiedade excessiva.",
-    "Eu não entro em operação só por medo de perder o movimento (FOMO).",
-    "Tomo decisões com calma mesmo em movimentos rápidos.",
-    "Aceito que boas oportunidades sempre voltarão.",
-    "Consigo encerrar uma operação no stop sem hesitar excessivamente.",
-    "Após um loss, mantenho clareza para a próxima decisão.",
-    "Não interpreto o loss como falha pessoal.",
-    "Aceito o stop como custo operacional.",
-    "Ajusto meu lote de acordo com o risco do trade.",
-    "Mantenho risco por trade previamente definido.",
-    "Evito aumentar exposição para recuperar prejuízo.",
-    "Meu tamanho de posição é consistente.",
-    "Não deixo de entrar em boas oportunidades por medo.",
-    "Executo o plano mesmo após perdas recentes.",
-    "O medo raramente me paralisa.",
-    "Confio mais na estatística do método do que na emoção.",
-    "Avalio resultados por séries de trades.",
-    "Evito mudar estratégia após poucos losses.",
-    "Mantenho disciplina em drawdowns.",
-    "Entendo o longo prazo como referência.",
-    "Minhas decisões são pouco influenciadas por terceiros.",
-    "Mantenho meu plano mesmo com opiniões contrárias.",
-    "Não altero decisões por comentários externos.",
-    "Opero com clareza sozinho ou em grupo.",
-    "Confio na minha leitura mesmo em cenários difíceis.",
-    "Executo setups válidos sem validação externa.",
-    "Minha análise sustenta minhas decisões.",
-    "Não abandono o plano por insegurança momentânea.",
-    "Evito comparar meus resultados com outros traders.",
-    "Não me sinto pressionado por ganhos alheios.",
-    "Mantenho estratégia independentemente de terceiros.",
-    "Foco na minha evolução.",
-    "Assumo total responsabilidade pelos resultados.",
-    "Não culpo o mercado ou terceiros.",
-    "Analiso minhas decisões antes de fatores externos.",
-    "Uso resultados como feedback pessoal.",
-    "Analiso minhas operações após o pregão.",
-    "Registro erros e acertos conscientemente.",
-    "Uso dados para ajustar decisões futuras.",
-    "Reviso trades sem carga emocional excessiva.",
-    "Ajusto estratégias sem abandonar método.",
-    "Reconheço quando o mercado muda.",
-    "Evito rigidez excessiva.",
-    "Consigo evoluir sem perder consistência.",
-    "Transformo erros em aprendizado prático.",
-    "Não repito falhas por negligência.",
-    "Uso perdas como feedback.",
-    "Aprendo mais com erros do que com ganhos.",
-    "Evito excesso de confiança após ganhos.",
-    "Mantenho disciplina em fases positivas.",
-    "Não aumento risco apenas por euforia.",
-    "Trato consistência como prioridade.",
-  ];
-
-  const DEVOLUTIVA_HTML = `
-    <div class="badge">Devolutiva oficial — Método ESFERA™</div>
-    <div class="divider"></div>
-    <b>Introdução ao Resultado</b><br>
-    Este resultado não define quem você é como trader.<br>
-    Ele revela <b>como sua mente está operando sob risco neste momento</b>.<br><br>
-    O Método ESFERA™ busca equilíbrio funcional, não perfeição.<br>
-    <div class="divider"></div>
-    <b>Leitura Geral do Gráfico</b><br>
-    Quanto mais equilibrado o gráfico, maior a capacidade de sustentar decisões consistentes no mercado.<br>
-    Assimetrias indicam onde o ajuste deve começar.<br>
-    <div class="divider"></div>
-    <b>Devolutiva por Dimensão</b><br><br>
-    <b>Controle Inibitório</b><br>
-    Pontuação baixa indica decisões reativas.<br>
-    Pontuação alta indica autorregulação consciente.<br><br>
-    <b>Gestão do Risco</b><br>
-    Pontuação baixa indica medo ou compensação emocional.<br>
-    Pontuação alta indica maturidade diante da perda.<br><br>
-    <b>Autonomia Decisional</b><br>
-    Pontuação baixa indica dependência externa.<br>
-    Pontuação alta indica autoria plena.<br><br>
-    <b>Aprendizado Adaptativo</b><br>
-    Pontuação baixa indica repetição de erros.<br>
-    Pontuação alta indica evolução contínua por feedback.<br>
-    <div class="divider"></div>
-    <b>Encerramento da Devolutiva</b><br>
-    Seu gráfico mostra <b>onde desenvolver</b>, não onde se julgar.<br><br>
-    O próximo passo é trabalhar conscientemente a dimensão mais baixa, elevando comportamentos específicos.<br><br>
-    Quando as quatro dimensões se alinham, o resultado deixa de ser emocional e passa a ser <b>estatístico, consistente e sustentável</b>.<br><br>
-    <b>Consistência não é força. É forma.</b>
-  `;
-
-  const STORAGE_KEY = 'esfera_v1';
-
-  function loadState(){
-    try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); }
-    catch{ return null; }
-  }
-  function saveState(state){
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }
-  function clearState(){
-    localStorage.removeItem(STORAGE_KEY);
-  }
-
-  // ============================
-  // UI refs
-  // ============================
-  const elLanding = document.getElementById('viewLanding');
-  const elTest = document.getElementById('viewTest');
-  const elResult = document.getElementById('viewResult');
-  const elQuestions = document.getElementById('questions');
-  const elProgressText = document.getElementById('progressText');
-  const elProgressBar = document.getElementById('progressBar');
-
-  const btnStart = document.getElementById('btnStart');
-  const btnLoad = document.getElementById('btnLoad');
-  const btnSave = document.getElementById('btnSave');
-  const btnBack = document.getElementById('btnBack');
-  const btnReset = document.getElementById('btnReset');
-
-  const btnSubmit = document.getElementById('btnSubmit');
-  const btnPrint = document.getElementById('btnPrint');
-  const btnRestart = document.getElementById('btnRestart');
-  const btnClear = document.getElementById('btnClear');
-
-  const inputName = document.getElementById('name');
-  const inputEmail = document.getElementById('email');
-  const inputMarket = document.getElementById('market');
-  const inputExperience = document.getElementById('experience');
-
-  const elWho = document.getElementById('who');
-  const elMeta = document.getElementById('meta');
-  const elDevolutiva = document.getElementById('devolutiva');
-
-  const elS1 = document.getElementById('s1');
-  const elS2 = document.getElementById('s2');
-  const elS3 = document.getElementById('s3');
-  const elS4 = document.getElementById('s4');
-
-  const toast = document.getElementById('toast');
-  function showToast(msg){
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(()=>toast.classList.remove('show'), 2200);
-  }
-
-  // ============================
-  // State
-  // ============================
-  let state = {
-    meta: { name:'', email:'', market:'Day Trade', experience:'Iniciante', startedAt: null },
-    answers: Array(QUESTIONS.length).fill(null),
-  };
-
-  function autosave(){ saveState(state); }
-
-  // ============================
-  // Navigation
-  // ============================
-  function showLanding(){
-    elLanding.style.display = '';
-    elTest.style.display = 'none';
-    elResult.style.display = 'none';
-  }
-  function showTest(){
-    elLanding.style.display = 'none';
-    elTest.style.display = '';
-    elResult.style.display = 'none';
-    renderQuestions();
-  }
-  function showResult(){
-    elLanding.style.display = 'none';
-    elTest.style.display = 'none';
-    elResult.style.display = '';
-  }
-
-  // ============================
-  // Questions
-  // ============================
-  function answeredCount(){
-    return state.answers.filter(v=>typeof v === 'number').length;
-  }
-  function updateProgress(){
-    const done = answeredCount();
-    const total = QUESTIONS.length;
-    elProgressText.textContent = `${done}/${total}`;
-    elProgressBar.style.width = `${Math.round((done/total)*100)}%`;
-    btnSubmit.disabled = done !== total;
-  }
-
-  function renderQuestions(){
-    elQuestions.innerHTML = '';
-
-    QUESTIONS.forEach((text, idx)=>{
-      const q = document.createElement('div');
-      q.className = 'q';
-
-      const top = document.createElement('div');
-      top.className = 'qTop';
-
-      const left = document.createElement('div');
-      left.style.display = 'flex';
-      left.style.gap = '10px';
-      left.style.flex = '1';
-
-      const qi = document.createElement('div');
-      qi.className = 'qIdx';
-      qi.textContent = `#${idx+1}`;
-
-      const qt = document.createElement('div');
-      qt.className = 'qText';
-      qt.textContent = text;
-
-      left.appendChild(qi);
-      left.appendChild(qt);
-
-      top.appendChild(left);
-      q.appendChild(top);
-
-      const scale = document.createElement('div');
-      scale.className = 'scale';
-
-      for(let v=1; v<=5; v++){
-        const lab = document.createElement('label');
-        lab.className = 'opt';
-        if(state.answers[idx] === v) lab.classList.add('sel');
-
-        const inp = document.createElement('input');
-        inp.type = 'radio';
-        inp.name = `q_${idx}`;
-        inp.value = String(v);
-        inp.checked = state.answers[idx] === v;
-
-        inp.addEventListener('change', ()=>{
-          state.answers[idx] = v;
-          [...scale.querySelectorAll('.opt')].forEach(o=>o.classList.remove('sel'));
-          lab.classList.add('sel');
-          updateProgress();
-          autosave();
-        });
-
-        const t = document.createElement('span');
-        t.textContent = String(v);
-
-        lab.appendChild(inp);
-        lab.appendChild(t);
-        scale.appendChild(lab);
-      }
-
-      q.appendChild(scale);
-      elQuestions.appendChild(q);
-    });
-
-    updateProgress();
-  }
-
-  // ============================
-  // 12 métricas (0–80) + Macro
-  // ============================
-  function computeMetrics(){
-    const sumQs = (arr) => arr.reduce((acc, q)=> acc + (state.answers[q-1] || 0), 0);
-
-    const metrics = [
-      { key:"CI1", label:"Pausa antes do clique", qs:[1,2,3,4,5] },
-      { key:"CI2", label:"Regulação emocional", qs:[6,7,8,9,10] },
-      { key:"CI3", label:"Disciplina sob oportunidade", qs:[11,12,13,14,15,16] },
-
-      { key:"GR1", label:"Aceitação do stop", qs:[17,18,19,20] },
-      { key:"GR2", label:"Consistência de exposição", qs:[21,22,23,24] },
-      { key:"GR3", label:"Coragem estatística", qs:[25,26,27,28,29,30,31,32] },
-
-      { key:"AD1", label:"Blindagem externa", qs:[33,34,35,36] },
-      { key:"AD2", label:"Confiança operacional", qs:[37,38,39,40] },
-      { key:"AD3", label:"Responsabilidade total", qs:[41,42,43,44,45,46,47,48] },
-
-      { key:"AA1", label:"Revisão e registro", qs:[49,50,51,52] },
-      { key:"AA2", label:"Ajuste sem quebrar o método", qs:[53,54,55,56] },
-      { key:"AA3", label:"Maturidade pós-resultado", qs:[57,58,59,60,61,62,63,64] },
+      // RIG (13-16)
+      { key:"RIG", text:"Tenho dificuldade de me adaptar quando o mercado muda." },
+      { key:"RIG", text:"Sigo métodos antigos mesmo quando o mercado tá diferente." },
+      { key:"RIG", text:"Fico preso no ‘sempre fiz assim’ e demoro pra mudar." },
+      { key:"RIG", text:"Demoro pra aceitar que preciso ajustar minha execução/abordagem." },
     ];
 
-    const values = {};
-    for(const m of metrics){
-      const raw = sumQs(m.qs);
-      const min = m.qs.length * 1;
-      const max = m.qs.length * 5;
-      const norm01 = (raw - min) / (max - min);
-      values[m.key] = Math.round(norm01 * 80);
-    }
-    return { metrics, values };
-  }
+    // Escala (4 pontos) — rápida e simples
+    const SCALE = [
+      { label:"Discordo", value:0 },
+      { label:"Às vezes", value:1 },
+      { label:"Quase sempre", value:2 },
+      { label:"Sempre", value:3 },
+    ];
 
-  function computeMacro(values){
-    return {
-      CI: Math.round((values.CI1 + values.CI2 + values.CI3)/3),
-      GR: Math.round((values.GR1 + values.GR2 + values.GR3)/3),
-      AD: Math.round((values.AD1 + values.AD2 + values.AD3)/3),
-      AA: Math.round((values.AA1 + values.AA2 + values.AA3)/3),
-    };
-  }
-
-  function levelFromScore(score, mode){
-    if(score <= 29) return mode[0];
-    if(score <= 49) return mode[1];
-    if(score <= 64) return mode[2];
-    return mode[3];
-  }
-  function levelDefaultCI(){ return ["crítico","instável","funcional","avançado"]; }
-  function levelDefaultGR(){ return ["disfuncional","instável","funcional","avançado"]; }
-  function levelDefaultAD(){ return ["dependência crítica","instável","funcional","avançado"]; }
-  function levelDefaultAA(){ return ["rigidez crítica","instável","funcional","avançado"]; }
-
-  // ============================
-  // Radar chart
-  // ============================
-  let radarChart = null;
-
-  function renderRadarFromMetrics(metrics, values){
-    const canvas = document.getElementById('radar');
-    if (!canvas) return;
-
-    if (typeof Chart === "undefined") {
-      showToast("Aviso: Chart.js não carregou. Resultado exibido sem gráfico.");
-      return;
-    }
-
-    if (radarChart && typeof radarChart.destroy === "function") {
-      radarChart.destroy();
-    }
-
-    const labels = metrics.map(m => m.label);
-    const data = metrics.map(m => values[m.key]);
-
-    radarChart = new Chart(canvas, {
-      type: 'radar',
-      data: {
-        labels,
-        datasets: [{
-          label: 'ESFERA™ (0–80)',
-          data,
-          borderWidth: 2,
-          pointRadius: 3,
-          fill: true,
-        }]
+    const PROFILE_COPY = {
+      REA: {
+        name: "⚠️ Reatividade Emocional",
+        desc: "Na hora do trade, seu cérebro entra no modo ‘ameaça’. Você até sabe o que fazer, mas a emoção toma o volante no clique.",
+        bullets: [
+          "Entra fora do plano quando sente pressão",
+          "Tenta recuperar prejuízo no impulso",
+          "Devolve lucro por decisões emocionais",
+        ]
       },
-      options: {
-        responsive: true,
-        plugins: { legend: { labels: { color: '#e9ecf1' } } },
-        scales: {
-          r: {
-            min: 0,
-            max: 80,
-            ticks: { stepSize: 10, color: '#aab3c2', backdropColor: 'transparent' },
-            angleLines: { color: 'rgba(34,48,74,.9)' },
-            grid: { color: 'rgba(34,48,74,.7)' },
-            pointLabels: { color: '#e9ecf1', font: { size: 11, weight: 600 } },
-          }
+      ANS: {
+        name: "🟦 Ansiedade Antecipatória",
+        desc: "Você vive o trade antes do trade acontecer. O medo do erro te faz travar, perder timing e operar com tensão.",
+        bullets: [
+          "Perde boas entradas por medo de errar",
+          "Pensa demais e executa de menos",
+          "Opera tenso e se desgasta rápido",
+        ]
+      },
+      AVL: {
+        name: "🟨 Aversão à Perda",
+        desc: "Seu cérebro odeia perder. A dor do prejuízo manda mais do que a lógica — e isso distorce sua gestão (stop e gain).",
+        bullets: [
+          "Segura stop mais do que deveria",
+          "Corta ganho cedo pra ‘garantir’",
+          "Altera plano pra evitar fechar negativo",
+        ]
+      },
+      RIG: {
+        name: "🟩 Rigidez Cognitiva",
+        desc: "Você busca controle total e se prende no ‘certo’. Só que mercado muda — e rigidez vira atraso, te deixando previsível.",
+        bullets: [
+          "Demora pra ajustar quando o mercado muda",
+          "Fica preso no padrão/hábito",
+          "Executa bem só quando tudo ‘encaixa’",
+        ]
+      }
+    };
+
+    // =========================
+    // STATE
+    // =========================
+    const state = {
+      lead: { name:"", email:"", phone:"" },
+      index: 0,
+      answers: Array(QUESTIONS.length).fill(null), // each: { value, label }
+      scores: { REA:0, ANS:0, AVL:0, RIG:0 },
+      dominant: null,
+    };
+
+    // =========================
+    // HELPERS
+    // =========================
+    const $ = (id) => document.getElementById(id);
+
+    function normalizePhone(phone){
+      return String(phone || "").replace(/[^\d]/g,"");
+    }
+
+    function isValidEmail(email){
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email||"").trim());
+    }
+
+    function formatPhoneBR(value){
+      // Input mask (simple) for BR phones with DDD
+      const digits = String(value || "").replace(/\D/g,"").slice(0,11);
+      const len = digits.length;
+      if(len === 0) return "";
+      if(len < 3) return `(${digits}`;
+      if(len < 7) return `(${digits.slice(0,2)}) ${digits.slice(2)}`;
+      if(len < 11) return `(${digits.slice(0,2)}) ${digits.slice(2,6)}-${digits.slice(6)}`;
+      return `(${digits.slice(0,2)}) ${digits.slice(2,7)}-${digits.slice(7)}`;
+    }
+
+    function showError(el, msg){
+      el.textContent = msg;
+      el.style.display = "block";
+    }
+    function hideError(el){
+      el.textContent = "";
+      el.style.display = "none";
+    }
+
+    function calcScores(){
+      const scores = { REA:0, ANS:0, AVL:0, RIG:0 };
+      for(let i=0;i<QUESTIONS.length;i++){
+        const q = QUESTIONS[i];
+        const a = state.answers[i];
+        if(a && typeof a.value === "number"){
+          scores[q.key] += a.value;
         }
       }
-    });
-  }
-
-  // ============================
-  // Present Result
-  // ============================
-  function presentResult(){
-    const { metrics, values } = computeMetrics();
-    const macro = computeMacro(values);
-
-    elS1.textContent = String(macro.CI);
-    elS2.textContent = String(macro.GR);
-    elS3.textContent = String(macro.AD);
-    elS4.textContent = String(macro.AA);
-
-    const meta = state.meta;
-    elWho.textContent = meta.name ? meta.name : '';
-    elMeta.textContent = `${meta.market} • ${meta.experience}`;
-
-    elDevolutiva.innerHTML = DEVOLUTIVA_HTML + `
-      <div class="divider"></div>
-      <div class="badge">Níveis interpretativos (0–80)</div>
-      <div class="small muted" style="margin-top:8px;line-height:1.7">
-        <b>Controle Inibitório</b>: ${levelFromScore(macro.CI, levelDefaultCI())}<br>
-        <b>Gestão do Risco</b>: ${levelFromScore(macro.GR, levelDefaultGR())}<br>
-        <b>Autonomia Decisional</b>: ${levelFromScore(macro.AD, levelDefaultAD())}<br>
-        <b>Aprendizado Adaptativo</b>: ${levelFromScore(macro.AA, levelDefaultAA())}
-      </div>
-    `;
-
-    renderRadarFromMetrics(metrics, values);
-    return { metrics, values, macro };
-  }
-
-  // ============================
-  // Send to WebApp
-  // ============================
-  async function sendToWebApp(payload){
-    await fetch(WEBAPP_URL, {
-      method: "POST",
-      mode: "no-cors",
-      keepalive: true,
-      headers: { "Content-Type": "text/plain;charset=UTF-8" },
-      body: JSON.stringify(payload)
-    });
-  }
-
-  // ============================
-  // Actions
-  // ============================
-  btnStart.addEventListener('click', ()=>{
-    if (!inputEmail.value.trim()) {
-      showToast("Preencha seu e-mail para receber o resultado.");
-      return;
+      state.scores = scores;
+      return scores;
     }
 
-    state.meta.name = inputName.value.trim();
-    state.meta.email = inputEmail.value.trim();
-    state.meta.market = inputMarket.value;
-    state.meta.experience = inputExperience.value;
-    state.meta.startedAt = state.meta.startedAt || new Date().toISOString();
-    autosave();
-    showTest();
-  });
-
-  btnLoad.addEventListener('click', ()=>{
-    const prev = loadState();
-    if(!prev){
-      showToast('Nenhum progresso salvo.');
-      return;
+    function dominantProfile(scores){
+      let bestKey = "REA";
+      let best = -1;
+      for(const k of Object.keys(scores)){
+        if(scores[k] > best){
+          best = scores[k];
+          bestKey = k;
+        }
+      }
+      return bestKey;
     }
-    state = prev;
-    inputName.value = state.meta?.name || '';
-    inputEmail.value = state.meta?.email || '';
-    inputMarket.value = state.meta?.market || 'Day Trade';
-    inputExperience.value = state.meta?.experience || 'Iniciante';
-    showTest();
-    showToast('Progresso carregado.');
+
+    function renderQuestion(){
+      const q = QUESTIONS[state.index];
+      $("qText").textContent = q.text;
+
+      $("qCount").textContent = `Pergunta ${state.index+1} de ${QUESTIONS.length}`;
+      $("bar").style.width = `${Math.round(((state.index) / QUESTIONS.length) * 100)}%`;
+
+      const choices = $("choices");
+      choices.innerHTML = "";
+
+      const saved = state.answers[state.index];
+
+      SCALE.forEach((opt, idx) => {
+        const id = `opt_${state.index}_${idx}`;
+        const wrap = document.createElement("label");
+        wrap.className = "choice";
+        wrap.setAttribute("for", id);
+
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = `q_${state.index}`;
+        radio.id = id;
+        radio.value = String(opt.value);
+        radio.checked = saved ? saved.value === opt.value : false;
+
+        radio.addEventListener("change", () => {
+          state.answers[state.index] = { value: opt.value, label: opt.label };
+          $("nextBtn").disabled = false;
+          hideError($("quizError"));
+        });
+
+        const t = document.createElement("div");
+        t.className = "t";
+        t.textContent = opt.label;
+
+        wrap.appendChild(radio);
+        wrap.appendChild(t);
+        choices.appendChild(wrap);
+      });
+
+      $("backBtn").disabled = state.index === 0;
+      $("nextBtn").textContent = (state.index === QUESTIONS.length - 1) ? "Finalizar ➜" : "Próxima ➜";
+      $("nextBtn").disabled = !state.answers[state.index];
+    }
+
+    function showQuiz(){
+      // restaura o título inicial
+      $("heroTitle").innerText =
+      "Seu maior problema no trade não é a estratégia. É o jeito que seu cérebro reage ao mercado.";
+      $("heroTitleResultSub").style.display = "none";
+      $("heroSub").style.display = "block";
+      $("leadBlock").style.display = "none";
+      $("quizBlock").style.display = "block";
+      $("resultBlock").style.display = "none";
+      state.index = 0;
+      renderQuestion();
+    }
+
+    function showResult(){
+      // troca o título no resultado
+      $("heroTitle").innerText = "Seu diagnóstico está pronto.";
+      $("heroTitleResultSub").style.display = "block";
+      $("heroSub").style.display = "none";
+      $("quizBlock").style.display = "none";
+      $("resultBlock").style.display = "block";
+
+      $("bar").style.width = `100%`;
+
+      const scores = calcScores();
+      const dom = dominantProfile(scores);
+      state.dominant = dom;
+
+      const copy = PROFILE_COPY[dom];
+      $("rTitle").textContent = `Seu padrão dominante hoje é: ${copy.name}`;
+      $("rDesc").textContent = copy.desc;
+
+      const ul = document.createElement("ul");
+      copy.bullets.forEach(b => {
+        const li = document.createElement("li");
+        li.textContent = b;
+        ul.appendChild(li);
+      });
+
+      const bullets = $("rBullets");
+      bullets.innerHTML = "";
+      bullets.appendChild(ul);
+
+      hideError($("sendError"));
+    }
+
+    async function sendToBackend(){
+  if(!APPS_SCRIPT_WEBAPP_URL){
+    return { ok:true, mock:true };
+  }
+
+  const payload = {
+    source: "github_pages",
+    test: "Metodo Esfera — Diagnóstico Rápido",
+    lead: state.lead,
+    answers: state.answers,
+    scores: state.scores,
+    dominant: state.dominant,
+    createdAt: new Date().toISOString()
+  };
+
+  // ✅ Evita CORS: envia e não tenta ler resposta
+  await fetch(APPS_SCRIPT_WEBAPP_URL, {
+    method: "POST",
+    mode: "no-cors",
+    // não coloque headers aqui, pra não disparar preflight
+    body: JSON.stringify(payload)
   });
 
-  btnSave.addEventListener('click', ()=>{
-    autosave();
-    showLanding();
-    showToast('Salvo. Você pode continuar depois.');
-  });
+  // Se chegou aqui, consideramos ok (o servidor recebeu)
+  return { ok: true };
+}
 
-  btnBack.addEventListener('click', ()=>{
-    showLanding();
-  });
+    // =========================
+    // EVENTS
+    // =========================
+    $("phone").addEventListener("input", (e) => {
+      const v = formatPhoneBR(e.target.value);
+      e.target.value = v;
+    });
 
-  btnSubmit.addEventListener('click', async ()=>{
-    autosave();
+    $("startBtn").addEventListener("click", () => {
+      const name = $("name").value.trim();
+      const email = $("email").value.trim();
+      const phone = $("phone").value.trim();
+      const leadError = $("leadError");
+      hideError(leadError);
 
-    try {
-      const { metrics, values, macro } = presentResult();
+      if(name.length < 2) return showError(leadError, "Coloca seu nome (rapidinho) pra eu te mandar o diagnóstico.");
+      if(!isValidEmail(email)) return showError(leadError, "Seu e-mail parece inválido. Confere e tenta de novo.");
+      const digits = normalizePhone(phone);
+      if(digits.length < 10) return showError(leadError, "Coloca um WhatsApp com DDD. Ex.: (11) 99999-9999");
+
+      state.lead = { name, email, phone };
+
+      showQuiz();
+    });
+
+    $("backBtn").addEventListener("click", () => {
+      hideError($("quizError"));
+      if(state.index > 0){
+        state.index--;
+        renderQuestion();
+      }
+    });
+
+    $("nextBtn").addEventListener("click", () => {
+      const err = $("quizError");
+      hideError(err);
+
+      if(!state.answers[state.index]){
+        return showError(err, "Escolhe uma opção pra continuar.");
+      }
+
+      if(state.index < QUESTIONS.length - 1){
+        state.index++;
+        renderQuestion();
+        return;
+      }
+
+      // finish
       showResult();
+    });
 
-      const payload = {
-        meta: {
-          name: state.meta.name || "",
-          email: state.meta.email || "",
-          market: state.meta.market || "",
-          experience: state.meta.experience || ""
-        },
-        macro,
-        scores: values,
-        metrics: metrics.map(m => ({ key: m.key, label: m.label })),
-        levels: {
-          CI: levelFromScore(macro.CI, levelDefaultCI()),
-          GR: levelFromScore(macro.GR, levelDefaultGR()),
-          AD: levelFromScore(macro.AD, levelDefaultAD()),
-          AA: levelFromScore(macro.AA, levelDefaultAA())
-        },
-        createdAt: new Date().toISOString()
-      };
+    $("restartBtn").addEventListener("click", () => {
+      // reset quiz only
+      state.index = 0;
+      state.answers = Array(QUESTIONS.length).fill(null);
+      state.scores = { REA:0, ANS:0, AVL:0, RIG:0 };
+      state.dominant = null;
 
-      sendToWebApp(payload).catch(()=>{});
-      showToast("Resultado gerado. Se o e-mail não cair em 1–2 min, verifique Spam/Promoções.");
+      $("heroSub").style.display = "block";
+      $("leadBlock").style.display = "block";
+      $("quizBlock").style.display = "none";
+      $("resultBlock").style.display = "none";
+      $("name").focus();
+    });
 
-    } catch (e) {
-      console.error(e);
-      showToast("Erro ao gerar resultado. Abra o Console (F12) e veja o erro em vermelho.");
-    }
-  });
+    $("sendBtn").addEventListener("click", async () => {
+      const btn = $("sendBtn");
+      const err = $("sendError");
+      hideError(err);
 
-  btnPrint.addEventListener('click', ()=> window.print());
+      btn.disabled = true;
+      btn.textContent = "Enviando...";
 
-  btnRestart.addEventListener('click', ()=>{
-    state.answers = Array(QUESTIONS.length).fill(null);
-    autosave();
-    showTest();
-    showToast('Teste reiniciado.');
-  });
+      try{
+        calcScores();
+        const dom = dominantProfile(state.scores);
+        state.dominant = dom;
 
-  btnClear.addEventListener('click', ()=>{
-    clearState();
-    state = { meta: { name:'', email:'', market:'Day Trade', experience:'Iniciante', startedAt:null }, answers: Array(QUESTIONS.length).fill(null) };
-    inputName.value=''; inputEmail.value=''; inputMarket.value='Day Trade'; inputExperience.value='Iniciante';
-    showLanding();
-    showToast('Dados apagados.');
-  });
+        const resp = await sendToBackend();
 
-  btnReset.addEventListener('click', ()=>{
-    clearState();
-    state = { meta: { name:'', email:'', market:'Day Trade', experience:'Iniciante', startedAt:null }, answers: Array(QUESTIONS.length).fill(null) };
-    inputName.value=''; inputEmail.value='';
-    showLanding();
-    showToast('Reiniciado.');
-  });
+        // Feedback simples
+        btn.textContent = "✅ Enviado!";
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.textContent = "📩 Enviar diagnóstico no e-mail";
+        }, 1800);
 
-  // ============================
-  // Boot (com gate)
-  // ============================
-  (async function init(){
-    // Overlay aparece só se precisar validar
-    ensureGateOverlay();
-    const ok = await enforceGateOrRedirect();
-    if (!ok) return;
-
-    const prev = loadState();
-    if(prev){
-      inputName.value = prev.meta?.name || '';
-      inputEmail.value = prev.meta?.email || '';
-      inputMarket.value = prev.meta?.market || 'Day Trade';
-      inputExperience.value = prev.meta?.experience || 'Iniciante';
-      btnLoad.textContent = 'Continuar (progresso encontrado)';
-    } else {
-      btnLoad.textContent = 'Continuar (se houver)';
-    }
-    showLanding();
-  })();
-</script>
+        // Se ainda estiver mock, avisamos de leve
+        if(resp && resp.mock){
+          showError(err, "Obs.: backend ainda não está conectado. Assim que conectar, vai salvar lead + disparar e-mail automaticamente.");
+        }
+      }catch(ex){
+        showError(err, "Deu ruim ao enviar. Tenta de novo em alguns segundos.");
+        btn.disabled = false;
+        btn.textContent = "📩 Enviar diagnóstico no e-mail";
+      }
+    });
+  </script>
 </body>
 </html>
